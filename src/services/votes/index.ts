@@ -1,15 +1,13 @@
-import { injectable } from "tsyringe";
 import { DBClient } from "../api";
 import IVote from "../../domains/votes";
 
 const COLLECTION = "votes";
 
-@injectable()
 class Vote {
-  db: DBClient;
+  private db: DBClient;
 
-  constructor(dbClient: DBClient) {
-    this.db = dbClient;
+  constructor() {
+    this.db = new DBClient();
   }
 
   create = (params: object) => {

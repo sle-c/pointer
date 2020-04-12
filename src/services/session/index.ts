@@ -1,18 +1,21 @@
-import { injectable } from "tsyringe";
 import { DBClient } from "../api";
 import ISession, { SessionStatus } from "../../domains/session";
 
 const COLLECTION = "sessions";
 
-@injectable()
-class Session {
-  db: DBClient;
+interface SessionCreate {
+  status: SessionStatus;
+  hostID: string;
+}
 
-  constructor(dbClient: DBClient) {
-    this.db = dbClient;
+class Session {
+  private db: DBClient;
+
+  constructor() {
+    this.db = new DBClient();
   }
 
-  create = (params: object) => {
+  create = (params: SessionCreate) => {
     return new Promise<ISession>((resolve, reject) => {
       this.db.create(COLLECTION, params).then((resp) =>{
         resolve({
