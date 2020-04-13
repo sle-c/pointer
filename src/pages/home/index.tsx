@@ -41,7 +41,7 @@ const Home = () => {
           <div className={styles.left}>
             <h3 className={styles.subheader}>
               Agile Story Points <br/>
-              - for Remote Agile Teams
+              - for Remote Teams
             </h3>
             <p className={styles.tagLine}>
               Host your room, invite others to join and go to town on the Story Points <span role="img" aria-label="rocket">🚀🚀🚀</span>
