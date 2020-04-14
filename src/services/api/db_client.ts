@@ -67,18 +67,24 @@ class DBClient {
 
   create = (collection: string, params: object) => {
     return new Promise<DBClientResponse>((resolve, reject) => {
-      const request = this.db.collection(collection).add(params);
+      const request = this.db.collection(collection).add({
+        ...params,
+        createdAt: ServerTimestamp,
+        updatedAt: ServerTimestamp,
+      });
 
       request.then((docRef: firebase.firestore.DocumentReference) => {
-        resolve({
-          docRef: docRef,
-          data: {
-            ID: docRef.id,
-            ...params,
-            createdAt: ServerTimestamp,
-            updatedAt: ServerTimestamp,
-          }
-        });
+        docRef
+          .get()
+          .then((snapshot: firebase.firestore.DocumentSnapshot) => {
+            resolve({
+              docRef: docRef,
+              data: {
+                ID: docRef.id,
+                ...snapshot.data(),
+              }
+            });
+          });
       }).catch((err) => {
         const errWrapper : DBClientError = {
           message: err.message,
