@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import classNames from "classnames";
 import Session from "../../services/session";
 import { SessionStatus } from "../../domains/session";
 import styles from "./styles.module.scss";
@@ -36,6 +35,28 @@ const Home = () => {
         <header>
           <h1 className={styles.logo}>Pointers.</h1>
         </header>
+
+
+        <img
+          id={styles.laptopCat}
+          src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Flaptop-cat.png?alt=media"
+          alt="laptop-cat"
+        />
+        <img
+          id={styles.chartCat}
+          src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Fchart-cat.png?alt=media"
+          alt="chart-cat"
+        />
+        <img
+          id={styles.toiletCat}
+          src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Ftoilet-cat.png?alt=media"
+          alt="toilet-cat"
+        />
+        <img
+          id={styles.carCat}
+          src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Fcar-cat.png?alt=media"
+          alt="car-cat"
+        />
 
         <div className={styles.heroContent}>
           <div className={styles.left}>
@@ -74,28 +95,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div className={styles.catContent}>
-        <img
-          id={styles.laptopCat}
-          src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Flaptop-cat.png?alt=media"
-          alt="laptop-cat"
-        />
-        <img
-          id={styles.chartCat}
-          src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Fchart-cat.png?alt=media"
-          alt="chart-cat"
-        />
-        <img
-          id={styles.toiletCat}
-          src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Ftoilet-cat.png?alt=media"
-          alt="toilet-cat"
-        />
-        <img
-          id={styles.carCat}
-          src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Fcar-cat.png?alt=media"
-          alt="car-cat"
-        />
-      </div>
+
     </div>
   );
 };
