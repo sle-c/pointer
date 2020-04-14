@@ -49,11 +49,6 @@ const Home = () => {
           src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Ftoilet-cat.png?alt=media"
           alt="toilet-cat"
         />
-        <img
-          id={styles.carCat}
-          src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Fcar-cat.png?alt=media"
-          alt="car-cat"
-        />
 
         <div className={styles.heroContent}>
           <div className={styles.left}>
