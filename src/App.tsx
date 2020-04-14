@@ -4,12 +4,17 @@ import {
   Switch,
   Route,
 } from "react-router-dom";
+
 import Home from "./pages/home";
+import Invite from "./pages/invite";
 
 function App() {
   return (
     <Router>
       <Switch>
+          <Route path="/invite">
+            <Invite />
+          </Route>
           <Route path="/">
             <Home />
           </Route>

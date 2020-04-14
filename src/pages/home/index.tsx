@@ -4,6 +4,7 @@ import Session from "../../services/session";
 import { SessionStatus } from "../../domains/session";
 import styles from "./styles.module.scss";
 import Auth from "../../services/auth";
+import Logo from "../../components/logo";
 
 const session = new Session();
 const auth = new Auth();
@@ -32,11 +33,7 @@ const Home = () => {
   return (
     <div className={styles.home}>
       <div className="container">
-        <header>
-          <h1 className={styles.logo}>Pointers.</h1>
-        </header>
-
-
+        <Logo />
         <img
           id={styles.laptopCat}
           src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Flaptop-cat.png?alt=media"
@@ -78,7 +75,7 @@ const Home = () => {
 
               <input
                 type="submit"
-                id={styles.createRoomBtn}
+                className="btn btn-success"
                 value="Create room"
               />
             </form>
