@@ -13,7 +13,7 @@
     ]
   },
   "hosting": {
-    "public": "public",
+    "public": "build",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -41,9 +41,6 @@
     },
     "hosting": {
       "port": 5000
-    },
-    "pubsub": {
-      "port": 8085
     }
   }
 }
