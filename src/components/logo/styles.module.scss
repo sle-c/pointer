@@ -1,7 +1,6 @@
 @import "../../variable.scss";
 
 .logo {
-  font-size: 18px;
   font-family: $circular-std;
   color: #E9F3FF;
   letter-spacing: 1.4px;
@@ -10,4 +9,12 @@
 
 .center {
   text-align: center;
+}
+
+.md {
+  font-size: 18px;
+}
+
+.sm {
+  font-size: 14px;
 }
