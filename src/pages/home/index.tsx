@@ -33,7 +33,10 @@ const Home = () => {
   return (
     <div className={styles.home}>
       <div className="container">
-        <Logo />
+        <div className={styles.header}>
+          <Logo size="md" />
+        </div>
+
         <img
           id={styles.laptopCat}
           src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Flaptop-cat.png?alt=media"
