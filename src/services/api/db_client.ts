@@ -16,9 +16,38 @@ interface DBClientError {
   readonly type: 'firebase' | 'internal',
 }
 
+interface WhereCondition {
+  readonly field: string,
+  readonly operator: '==' | '>=' | '<=' | '>' | '<' | 'array-contains' | 'in',
+  readonly value: any,
+};
+
+interface QueryResult {
+  ID: string,
+  [key: string]: any,
+};
+
 enum ErrorCode {
-  NotFound = 404
-}
+  NotFound = 404,
+  NoResults = 204,
+  ArgumentErr = 400,
+};
+
+const ArgumentError: DBClientError = {
+  message: "Missing required argument",
+  code: ErrorCode.ArgumentErr,
+  type: 'internal',
+};
+
+const wrapError = (err: { message: string, code: number }): DBClientError => {
+  const errWrapper : DBClientError = {
+    message: err.message,
+    code: err.code,
+    type: "firebase",
+  }
+
+  return errWrapper;
+};
 
 class DBClient {
   db: firebase.firestore.Firestore;
@@ -26,13 +55,13 @@ class DBClient {
   constructor() {
     this.db = firebase.firestore();
 
-    if (window.location.hostname === "localhost") {
-      console.log("localhost detected!");
-      this.db.settings({
-        host: "localhost:8080",
-        ssl: false
-      });
-    }
+    // if (window.location.hostname === "localhost") {
+    //   console.log("localhost detected!");
+    //   this.db.settings({
+    //     host: "localhost:8080",
+    //     ssl: false
+    //   });
+    // }
   }
 
   get = (path: string, options?: GetDocOptions) => {
@@ -55,12 +84,7 @@ class DBClient {
           reject(err);
         }
       }).catch((err) => {
-        const errWrapper : DBClientError = {
-          message: err.message,
-          code: err.code,
-          type: "firebase",
-        };
-        reject(errWrapper);
+        reject(wrapError(err));
       });
     });
   }
@@ -86,12 +110,7 @@ class DBClient {
             });
           });
       }).catch((err) => {
-        const errWrapper : DBClientError = {
-          message: err.message,
-          code: err.code,
-          type: "firebase",
-        };
-        reject(errWrapper);
+        reject(wrapError(err));
       });
     });
   }
@@ -106,12 +125,29 @@ class DBClient {
         })
         .then(resolve)
         .catch((err) => {
-          const errWrapper : DBClientError = {
-            message: err.message,
-            code: err.code,
-            type: "firebase",
-          };
-          reject(errWrapper);
+          reject(wrapError(err));
+        });
+    });
+  }
+
+  set = (collection: string, params: object) => {
+    return new Promise<{ ID: string, [key: string]: any}>((resolve, reject) => {
+      const docRef = this.db.collection(collection).doc();
+
+      const newParams = {
+        ...params,
+        createdAt: ServerTimestamp,
+        updatedAt: ServerTimestamp,
+      };
+
+      return docRef.set(newParams)
+        .then(() => {
+          resolve({
+            ID: docRef.id,
+            ...params,
+          });
+        }).catch((err) => {
+          reject(wrapError(err));
         });
     });
   }
@@ -122,12 +158,52 @@ class DBClient {
       return docRef.delete()
         .then(resolve)
         .catch((err) => {
-          const errWrapper : DBClientError = {
-            message: err.message,
-            code: err.code,
-            type: "firebase",
-          };
-          reject(errWrapper);
+          reject(wrapError(err));
+        });
+    });
+  }
+
+  query = (collection: string, whereConditions: WhereCondition[]) => {
+    return new Promise<QueryResult[]>((resolve, reject) => {
+      let collectionRef = this.db.collection(collection);
+
+      if (whereConditions.length < 1) {
+        reject(ArgumentError);
+      }
+
+      const firstCondition: WhereCondition = whereConditions[0];
+      let query: firebase.firestore.Query<firebase.firestore.DocumentData> = collectionRef.where(
+        firstCondition.field,
+        firstCondition.operator,
+        firstCondition.value,
+      );
+
+      for (let index = 1; index < whereConditions.length; index++) {
+        const condition = whereConditions[index];
+        query = query.where(
+          condition.field,
+          condition.operator,
+          condition.value,
+        );
+      }
+
+      query.get()
+        .then((snapshot: firebase.firestore.QuerySnapshot) => {
+          if (snapshot.empty) {
+            resolve([]);
+            return;
+          }
+          let results: QueryResult[] = [];
+          snapshot.forEach((docSnapshot: firebase.firestore.QueryDocumentSnapshot) => {
+            results.push({
+              ID: docSnapshot.id,
+              ...docSnapshot.data(),
+            });
+          });
+
+          resolve(results);
+        }).catch((err) => {
+          reject(wrapError(err));
         });
     });
   }

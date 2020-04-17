@@ -4,9 +4,9 @@ import ISession, { SessionStatus } from "../../domains/session";
 const COLLECTION = "sessions";
 
 interface SessionCreate {
-  status: SessionStatus;
-  hostID: string;
-}
+  status: SessionStatus
+  hostID: string
+};
 
 class Session {
   private db: DBClient;
