@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import Session from "../../services/session";
-import { SessionStatus } from "../../domains/session";
+import SessionDomain, { SessionStatus } from "../../domains/session";
 import styles from "./styles.module.scss";
 import Auth from "../../services/auth";
 import Logo from "../../components/logo";
@@ -9,17 +10,27 @@ import Logo from "../../components/logo";
 const session = new Session();
 const auth = new Auth();
 
-const createSession = (name: string) => {
+const createSession = (name: string, history: any) => {
   auth.signUpAnonymously(name).then((user) => {
     session.create({
       status: SessionStatus.Active,
       hostID: user.UID,
+    }).then((session: SessionDomain) => {
+      const location = {
+        pathname: '/invite',
+        state: {
+          session: session,
+          user: user,
+        },
+      };
+      history.push(location);
     });
   });
 };
 
 const Home = () => {
   const [nameInput, setNameInput] = useState("");
+  const history = useHistory();
 
   const onNameChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNameInput(e.target.value);
@@ -27,7 +38,7 @@ const Home = () => {
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    createSession(nameInput);
+    createSession(nameInput, history);
   };
 
   return (

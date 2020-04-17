@@ -1,12 +1,7 @@
 import firebase from "./firebase";
-import User from "../../domains/user";
+import Auth from "../../domains/auth";
 
 import { AUTH_LOCAL, AUTH_SESSION, AUTH_PROVIDERS } from "./firebase_constants";
-
-interface UserInfo {
-  name?: string,
-  photoURL?: string,
-}
 
 interface AuthError {
   readonly message: string,
@@ -17,7 +12,7 @@ interface AuthError {
 enum ErrorCode {
   NotSignedIn = 401,
   NotFound = 404,
-}
+};
 
 const ErrNotSignedIn = {
   message: "User not authenticated",
@@ -46,39 +41,12 @@ class AuthClient {
     this.auth = firebase.auth();
   }
 
-  updateUserInfo = (data: UserInfo) => {
-    return new Promise<void>((resolve, reject) => {
-      const user = firebase.auth().currentUser;
-
-      if (user) {
-        const req = user.updateProfile({
-          displayName: data.name || user.displayName,
-          photoURL: data.photoURL || user.photoURL,
-        });
-
-        req.then(resolve).catch((err) => {
-          const wrapErr: AuthError = {
-            message: err.message,
-            code: err.code,
-            type: "firebase",
-          };
-          reject(wrapErr);
-        });
-
-        return;
-      }
-
-      reject(ErrNotSignedIn);
-    });
-  }
-
-  currentUser = (): User | null => {
+  currentUser = (): Auth | null => {
     const user = firebase.auth().currentUser;
     if (user) {
       return {
         UID: user.uid,
         email: user.email,
-        name: user.displayName,
         verified: user.emailVerified,
       };
     }
@@ -86,7 +54,7 @@ class AuthClient {
   }
 
   signUp = (email: string, password: string) => {
-    return new Promise<User>((resolve, reject) => {
+    return new Promise<Auth>((resolve, reject) => {
       this.auth
         .createUserWithEmailAndPassword(email, password)
         .then((userData) => {
@@ -94,7 +62,6 @@ class AuthClient {
             resolve({
               UID: userData.user.uid,
               email: userData.user.email,
-              name: userData.user.displayName,
               verified: userData.user.emailVerified,
             });
           }
@@ -107,7 +74,7 @@ class AuthClient {
   }
 
   signIn = (email: string, password: string, rememberMe: boolean) => {
-    return new Promise<User>((resolve ,reject) => {
+    return new Promise<Auth>((resolve ,reject) => {
       const persistence = rememberMe ? AUTH_LOCAL : AUTH_SESSION;
 
       this.auth
@@ -119,7 +86,6 @@ class AuthClient {
                 resolve({
                   UID: userData.user.uid,
                   email: userData.user.email,
-                  name: userData.user.displayName,
                   verified: userData.user.emailVerified,
                 });
               } else {
@@ -136,7 +102,7 @@ class AuthClient {
   }
 
   signInAnonymously = () => {
-    return new Promise<User>((resolve, reject) => {
+    return new Promise<Auth>((resolve, reject) => {
       this.auth
         .setPersistence(AUTH_LOCAL).then(() =>{
           this.auth.signInAnonymously()
@@ -144,7 +110,6 @@ class AuthClient {
             if (anoUserData.user) {
               resolve({
                 UID: anoUserData.user?.uid,
-                name: anoUserData.user?.displayName,
                 isAnonymous: anoUserData.user?.isAnonymous,
               });
             } else {
@@ -165,7 +130,7 @@ class AuthClient {
   }
 
   linkAnonymousUser = (email: string, password: string) => {
-    return new Promise<User>((resolve, reject) => {
+    return new Promise<Auth>((resolve, reject) => {
       const credential = AUTH_PROVIDERS.EMAIL.credential(email, password);
       const currentUser = firebase.auth().currentUser;
 
@@ -176,7 +141,6 @@ class AuthClient {
               resolve({
                 UID: userData.user.uid,
                 email: userData.user.email,
-                name: userData.user.displayName,
                 verified: userData.user.emailVerified,
               });
             } else {

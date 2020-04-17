@@ -1,9 +1,6 @@
 interface User {
-  UID: string; // uuid of the session
-  email?: string | null;
+  UID: string; // uuid of the user
   name?: string | null;
-  verified?: boolean;
-  isAnonymous?: boolean;
 }
 
 export default User;

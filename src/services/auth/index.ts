@@ -1,11 +1,18 @@
 import { AuthClient } from "../api";
 import User from "../../domains/user";
+import UserService from "../users";
 
 class Auth {
   private authClient: AuthClient;
+  private userService: UserService;
 
   constructor() {
     this.authClient = new AuthClient();
+    this.userService = new UserService();
+  }
+
+  currentUser() {
+    return this.authClient.currentUser();
   }
 
   signUpAnonymously(name: string) {
@@ -13,7 +20,8 @@ class Auth {
       const req = this.authClient.signInAnonymously();
 
       req.then((user: User) => {
-        this.authClient.updateUserInfo({
+        this.userService.update({
+          uid: user.UID,
           name: name,
         }).then(() => {
           user.name = name;
