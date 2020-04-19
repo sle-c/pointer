@@ -8,7 +8,9 @@ import {
 import Home from "./pages/home";
 import Invite from "./pages/invite";
 import Join from "./pages/join";
+import FurOFur from "./pages/fur_o_fur";
 import ScrollToTop from './components/scroll_top';
+
 import Auth from "./services/auth";
 import store from "./store/store";
 import { updateUser } from "./store/user/actions";
@@ -44,6 +46,10 @@ function App() {
         <Route path="/">
           <Home />
         </Route>
+
+        <Route path="*">
+            <FurOFur />
+          </Route>
       </Switch>
 
     </Router>
