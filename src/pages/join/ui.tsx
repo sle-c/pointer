@@ -4,7 +4,11 @@ import Logo from "../../components/logo";
 import JoinForm from "./join_form";
 import styles from "./styles.module.scss";
 
-const JoinUI = () => {
+type PropTypes = {
+  roomID: string
+};
+
+const JoinUI = (props: PropTypes) => {
   return (
     <div className={styles.join}>
       <Logo position="center"/>
