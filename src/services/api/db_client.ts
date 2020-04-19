@@ -130,9 +130,15 @@ class DBClient {
     });
   }
 
-  set = (collection: string, params: object) => {
+  set = (collection: string, params: object, id: string = "") => {
     return new Promise<{ ID: string, [key: string]: any}>((resolve, reject) => {
-      const docRef = this.db.collection(collection).doc();
+      let docRef: firebase.firestore.DocumentReference;
+      if (id !== "") {
+        docRef = this.db.collection(collection).doc(id);
+      } else {
+        docRef = this.db.collection(collection).doc();
+      }
+
 
       const newParams = {
         ...params,
