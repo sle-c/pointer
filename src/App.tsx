@@ -39,7 +39,7 @@ function App() {
           <Invite />
         </Route>
 
-        <Route path="/join">
+        <Route path="/join/:roomID">
           <Join />
         </Route>
 
@@ -48,8 +48,8 @@ function App() {
         </Route>
 
         <Route path="*">
-            <FurOFur />
-          </Route>
+          <FurOFur />
+        </Route>
       </Switch>
 
     </Router>
