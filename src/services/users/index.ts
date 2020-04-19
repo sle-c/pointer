@@ -1,12 +1,12 @@
 import { DBClient } from "../api";
 import IUser from "../../domains/user";
 
-const COLLECTION = "users"
+const COLLECTION = "users";
 
-interface UserUpdate {
-  uid?: string,
+interface UpdateUser {
+  UID: string,
   name: string,
-};
+}
 
 class User {
   private db: DBClient;
@@ -17,35 +17,35 @@ class User {
 
   get = (uid: string) => {
     return new Promise<IUser>((resolve, reject) => {
-      this.db.query(
-        COLLECTION,
-        [
-          {
-            field: "uid",
-            operator: "==",
-            value: uid,
-          }
-        ],
-      ).then((results) => {
-        if (results.length > 0) {
-          const user = results[0];
-          resolve({
-            UID: user.ID as string,
-            name: user.name as string,
-          });
-        }
-      });
+      this.db.get(`${ COLLECTION }/${ uid }`)
+        .then((resp) => {
+          const user: IUser = {
+            UID: resp.data.uid as string,
+            name: resp.data.name as string,
+          };
+
+          resolve(user);
+        }).catch(reject);
     });
   }
 
-  update = (params: UserUpdate) => {
+  update = (params: UpdateUser) => {
     return new Promise<IUser>((resolve, reject) => {
-      this.db.set(COLLECTION, params)
-        .then((user) => {
-          resolve({
-            UID: user.ID,
-            name: user.name as string,
-          });
+      this.db.set(
+          COLLECTION,
+          {
+            uid: params.UID,
+            name: params.name,
+          },
+          params.UID,
+        )
+        .then(() => {
+          const newUser = {
+            UID: params.UID,
+            name: params.name,
+          };
+
+          resolve(newUser);
         }).catch(reject);
     });
   }

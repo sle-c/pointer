@@ -15,7 +15,7 @@ const PrivateRoute = ({ children, ...rest }: PropTypes) => {
     <Route
       {...rest}
       render={({ location }) =>
-        auth.currentUser() ? (
+        auth.isSignedIn() ? (
           children
         ) : (
           <Redirect

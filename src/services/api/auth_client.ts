@@ -1,5 +1,5 @@
 import firebase from "./firebase";
-import Auth from "../../domains/auth";
+import User from "../../domains/user";
 
 import { AUTH_LOCAL, AUTH_SESSION, AUTH_PROVIDERS } from "./firebase_constants";
 
@@ -41,31 +41,37 @@ class AuthClient {
     this.auth = firebase.auth();
   }
 
-  currentUser = (): Auth | null => {
+  currentUser = (): User | null => {
     const user = firebase.auth().currentUser;
     if (user) {
       return {
         UID: user.uid,
+        name: user.displayName,
         email: user.email,
         verified: user.emailVerified,
+        isAnonymous: user.isAnonymous,
       };
     }
     return null;
   }
 
-  signUp = (email: string, password: string) => {
-    return new Promise<Auth>((resolve, reject) => {
+  signUp = (email: string, password: string, name?: string) => {
+    return new Promise<User>((resolve, reject) => {
       this.auth
         .createUserWithEmailAndPassword(email, password)
         .then((userData) => {
           if (userData.user) {
+            if (name) {
+              userData.user.updateProfile({ displayName: name });
+            }
+
             resolve({
               UID: userData.user.uid,
               email: userData.user.email,
               verified: userData.user.emailVerified,
+              isAnonymous: false,
             });
           }
-
         })
         .catch((err) => {
           reject(wrapError(err));
@@ -74,7 +80,7 @@ class AuthClient {
   }
 
   signIn = (email: string, password: string, rememberMe: boolean) => {
-    return new Promise<Auth>((resolve ,reject) => {
+    return new Promise<User>((resolve ,reject) => {
       const persistence = rememberMe ? AUTH_LOCAL : AUTH_SESSION;
 
       this.auth
@@ -87,6 +93,7 @@ class AuthClient {
                   UID: userData.user.uid,
                   email: userData.user.email,
                   verified: userData.user.emailVerified,
+                  isAnonymous: userData.user.isAnonymous,
                 });
               } else {
                 reject(ErrNotFound);
@@ -101,24 +108,29 @@ class AuthClient {
     });
   }
 
-  signInAnonymously = () => {
-    return new Promise<Auth>((resolve, reject) => {
+  signInAnonymously = (name?: string) => {
+    return new Promise<User>((resolve, reject) => {
       this.auth
-        .setPersistence(AUTH_LOCAL).then(() =>{
+        .setPersistence(AUTH_LOCAL)
+        .then(() =>{
           this.auth.signInAnonymously()
-          .then((anoUserData) => {
-            if (anoUserData.user) {
-              resolve({
-                UID: anoUserData.user?.uid,
-                isAnonymous: anoUserData.user?.isAnonymous,
-              });
-            } else {
-              reject(ErrNotFound);
-            }
-          })
-          .catch((err) => {
-            reject(wrapError(err));
-          });
+            .then((anoUserData) => {
+              if (anoUserData.user) {
+                if (name) {
+                  anoUserData.user.updateProfile({ displayName: name });
+                }
+                resolve({
+                  UID: anoUserData.user?.uid as string,
+                  name: name,
+                  isAnonymous: true,
+                });
+              } else {
+                reject(ErrNotFound);
+              }
+            })
+            .catch((err) => {
+              reject(wrapError(err));
+            });
         }).catch((err) => {
           reject(wrapError(err));
         });
@@ -130,7 +142,7 @@ class AuthClient {
   }
 
   linkAnonymousUser = (email: string, password: string) => {
-    return new Promise<Auth>((resolve, reject) => {
+    return new Promise<User>((resolve, reject) => {
       const credential = AUTH_PROVIDERS.EMAIL.credential(email, password);
       const currentUser = firebase.auth().currentUser;
 
@@ -140,8 +152,10 @@ class AuthClient {
             if (userData.user) {
               resolve({
                 UID: userData.user.uid,
+                name: userData.user.displayName,
                 email: userData.user.email,
                 verified: userData.user.emailVerified,
+                isAnonymous: false,
               });
             } else {
               reject(ErrNotFound);
@@ -152,6 +166,23 @@ class AuthClient {
       } else {
         reject(ErrNotSignedIn);
       }
+    });
+  }
+
+  onAuthStateChanged = (callback: (user: User | null) => void) => {
+    this.auth.onAuthStateChanged((user) => {
+      if (user) {
+        callback({
+          UID: user.uid,
+          name: user.displayName,
+          email: user.email,
+          verified: user.emailVerified,
+          isAnonymous: user.isAnonymous,
+        });
+
+        return;
+      }
+      callback(null);
     });
   }
 }

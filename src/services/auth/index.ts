@@ -1,5 +1,6 @@
 import { AuthClient } from "../api";
 import User from "../../domains/user";
+import AuthDomain from "../../domains/auth";
 import UserService from "../users";
 
 class Auth {
@@ -11,24 +12,37 @@ class Auth {
     this.userService = new UserService();
   }
 
-  currentUser() {
+  isSignedIn(): boolean {
+    return this.authClient.currentUser() !== null;
+  }
+
+  currentUser(): User | null {
     return this.authClient.currentUser();
   }
 
   signUpAnonymously(name: string) {
     return new Promise<User>((resolve, reject) => {
-      const req = this.authClient.signInAnonymously();
+      const req = this.authClient.signInAnonymously(name);
 
-      req.then((user: User) => {
+      req.then((auth: AuthDomain) => {
         this.userService.update({
-          uid: user.UID,
           name: name,
-        }).then(() => {
-          user.name = name;
-          resolve(user);
+          UID: auth.UID,
+        }).then((user: User) => {
+          resolve({
+            UID: auth.UID,
+            name: user.name,
+            verified: auth.verified,
+            email: auth.email,
+            isAnonymous: true,
+          });
         }).catch(reject);
       }).catch(reject);
     });
+  }
+
+  onAuthStateChanged(callback: (user: User | null) => void) {
+    this.authClient.onAuthStateChanged(callback);
   }
 }
 

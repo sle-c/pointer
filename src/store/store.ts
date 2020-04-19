@@ -1,10 +1,12 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import userReducer from "./userReducer";
+import { userReducer } from "./user/reducer";
+import { sessionReducer } from './session/reducer';
 
 const rootReducer = combineReducers({
   user: userReducer,
+  session: sessionReducer,
 });
 
 const logger = (store: any) => (next: any) => (action: any) => {
@@ -22,3 +24,4 @@ const store = createStore(
 );
 
 export default store;
+export type RootState = ReturnType<typeof rootReducer>
