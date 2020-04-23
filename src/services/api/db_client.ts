@@ -101,11 +101,15 @@ class DBClient {
         docRef
           .get()
           .then((snapshot: firebase.firestore.DocumentSnapshot) => {
+            const data = snapshot.data();
+
             resolve({
               docRef: docRef,
               data: {
                 ID: docRef.id,
-                ...snapshot.data(),
+                ...data,
+                createdAt: (data?.createdAt as firebase.firestore.Timestamp).toDate(),
+                updatedAt: (data?.updatedAt as firebase.firestore.Timestamp).toDate(),
               }
             });
           });

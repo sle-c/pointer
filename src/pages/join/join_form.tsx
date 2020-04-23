@@ -10,7 +10,11 @@ interface ErrorState {
   name?: string,
 };
 
-const JoinForm = () => {
+interface Props {
+  sessionID: string,
+};
+
+const JoinForm = (props: Props) => {
 
   const [nameInput, setNameInput] = useState("");
   const [err, setErr] = useState<ErrorState>({});
@@ -32,9 +36,9 @@ const JoinForm = () => {
       return;
     }
 
-    Interactor.joinSession();
-
-    history.push("/r/123123");
+    Interactor.joinSession(nameInput, props.sessionID).then(() => {
+      history.push(`/r/${ props.sessionID }`);
+    });
   };
 
   return (

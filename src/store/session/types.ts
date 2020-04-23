@@ -1,4 +1,5 @@
 import Session, { SessionStatus } from "../../domains/session";
+import Membership from "../../domains/membership";
 
 export const UPDATE_SESSION = "UPDATE_SESSION";
 
@@ -10,7 +11,10 @@ interface UpdateSessionAction {
 export type SessionState = {
   ID: string,
   status: SessionStatus,
-  hostID: string
+  hostID: string,
+  members: {
+    [k: string]: Membership,
+  },
 };
 
 export type SessionActionType = UpdateSessionAction;

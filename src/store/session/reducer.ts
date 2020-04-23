@@ -9,7 +9,8 @@ const initialState: SessionState = {
   ID: "",
   status: SessionStatus.Closed,
   hostID: "",
-}
+  members: {},
+};
 
 export function sessionReducer(state: SessionState = initialState, action: SessionActionType): SessionState {
   switch (action.type) {

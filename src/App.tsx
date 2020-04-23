@@ -39,7 +39,7 @@ function App() {
           <Invite />
         </Route>
 
-        <Route path="/join/:roomID">
+        <Route path="/join/:sessionID">
           <Join />
         </Route>
 

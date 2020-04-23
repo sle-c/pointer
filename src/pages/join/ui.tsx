@@ -5,7 +5,7 @@ import JoinForm from "./join_form";
 import styles from "./styles.module.scss";
 
 type PropTypes = {
-  roomID: string
+  sessionID: string
 };
 
 const JoinUI = (props: PropTypes) => {
@@ -28,7 +28,7 @@ const JoinUI = (props: PropTypes) => {
           A (nick)name will help your fur-ends recognize you
         </p>
 
-        <JoinForm />
+        <JoinForm sessionID={props.sessionID} />
       </div>
     </div>
   );
