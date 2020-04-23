@@ -7,26 +7,26 @@ import styles from "./styles.module.scss";
 const HomeUI = () => {
   return (
     <div className={styles.home}>
+      <img
+        id={styles.laptopCat}
+        src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Flaptop-cat.png?alt=media"
+        alt="laptop-cat"
+      />
+      <img
+        id={styles.chartCat}
+        src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Fchart-cat.png?alt=media"
+        alt="chart-cat"
+      />
+      <img
+        id={styles.toiletCat}
+        src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Ftoilet-cat.png?alt=media"
+        alt="toilet-cat"
+      />
+
       <div className="container">
         <div className={styles.header}>
           <Logo size="md" />
         </div>
-
-        <img
-          id={styles.laptopCat}
-          src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Flaptop-cat.png?alt=media"
-          alt="laptop-cat"
-        />
-        <img
-          id={styles.chartCat}
-          src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Fchart-cat.png?alt=media"
-          alt="chart-cat"
-        />
-        <img
-          id={styles.toiletCat}
-          src="https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Fimages%2Ftoilet-cat.png?alt=media"
-          alt="toilet-cat"
-        />
 
         <div className={styles.heroContent}>
           <div className={styles.left}>

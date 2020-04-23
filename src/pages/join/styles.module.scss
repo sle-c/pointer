@@ -35,4 +35,13 @@
     font-size: 0.875em;
     text-align: center;
   }
+
+  .formError {
+    font-size: 0.875em;
+    font-family: $roboto-mono;
+    font-style: italic;
+    color: #9c2f17;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
 }

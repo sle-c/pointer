@@ -17,7 +17,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>
 type Props = PropsFromRedux;
 
 const constructRoomURL = (session: { ID: string }): string => {
-  return `${ window.location.origin }/r/${ session.ID }`;
+  return `${ window.location.origin }/join/${ session.ID }`;
 };
 
 const Invite = (props: Props) => {

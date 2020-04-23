@@ -4,10 +4,10 @@ import { useParams, Redirect } from "react-router-dom";
 import JoinUI from "./ui";
 
 const Join = () => {
-  let { roomID } = useParams();
-  if (roomID) {
+  let { sessionID } = useParams();
+  if (sessionID) {
     return (
-      <JoinUI roomID={roomID} />
+      <JoinUI sessionID={sessionID} />
     );
   }
 

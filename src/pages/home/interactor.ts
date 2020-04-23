@@ -1,6 +1,6 @@
 import Auth from "../../services/auth";
-import Session from "../../services/session";
-import SessionDomain, { SessionStatus } from "../../domains/session";
+import Session, { SessionResponse } from "../../services/session";
+
 import { updateUser } from "../../store/user/actions";
 import { updateSession } from "../../store/session/actions";
 import store from "../../store/store";
@@ -17,14 +17,12 @@ async function createSession(name: string): Promise<void> {
 }
 
 async function saveSession(user: { UID: string }): Promise<void> {
-  const sess: SessionDomain = await session.create({
-    status: SessionStatus.Active,
+  const sess: SessionResponse = await session.create({
     hostID: user.UID,
   })
 
-  const action = updateSession(sess);
+  const action = updateSession(sess.session);
   store.dispatch(action);
-  return Promise.resolve();
 }
 
 export default {
