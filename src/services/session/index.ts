@@ -1,8 +1,6 @@
 import firebase, { ServerTimestamp } from "../api/firebase";
 import ISession, { SessionStatus } from "../../domains/session";
-import Membership, { Role } from "../../domains/membership";
-
-import isEmpty from "lodash/isEmpty";
+import { Role } from "../../domains/membership";
 
 const SESSION_COLLECTION = "sessions";
 
@@ -26,82 +24,70 @@ class Session {
     this.db = firebase.firestore();
   }
 
-  join = async (params: SessionJoin): Promise<SessionResponse> => {
-    const sessionRef = this.db.doc(`${ SESSION_COLLECTION }/${ params.sessionID }`);
+  get = async (sessionID: string): Promise<SessionResponse | null> => {
+    const sessionRef = this.db.doc(`${ SESSION_COLLECTION }/${ sessionID }`);
     const sessionSnapshot = await sessionRef.get();
     const sessionData = sessionSnapshot.data();
 
     if (sessionSnapshot.exists) {
-      const members = sessionData?.members || {};
-      const session = {
-        ID: sessionRef.id,
-        status: sessionData?.status as SessionStatus,
-        hostID: sessionData?.hostID as string,
-        members: sessionData?.members as { [key: string]: Membership },
-        updatedAt: sessionData?.updatedAt.toDate(),
-        createdAt: sessionData?.createdAt.toDate(),
-      };
-
-      if (!isEmpty(members[params.userUID])) {
-        return {
-          session: session,
-        };
-      }
-
-      const newMember = {
-        uid: params.userUID,
-        role: Role.member,
-        lastActiveAt: new Date(),
-      };
-
-      await sessionRef.update({
-        [`members.${ params.userUID }`]: newMember,
-        updatedAt: ServerTimestamp,
-      });
-
-      return{
+      return {
         session: {
-          ...session,
-          members: {
-            ...session.members,
-            [params.userUID]: newMember,
-          },
-          updatedAt: new Date(),
-        },
+          ID: sessionRef.id,
+          status: sessionData?.status as SessionStatus,
+          hostID: sessionData?.hostID as string,
+          updatedAt: sessionData?.updatedAt.toDate(),
+          createdAt: sessionData?.createdAt.toDate(),
+        }
       };
     }
+    return null;
+  }
 
-    const err = new Error("Session not found");
-    err.name = "SessionNotFound";
-    throw err;
+  join = async (params: SessionJoin): Promise<void> => {
+    const memberRef = this.db.collection(
+      `${ SESSION_COLLECTION }/${ params.sessionID }/members`
+    );
+
+    const newMember = {
+      uid: params.userUID,
+      role: Role.member,
+      lastActiveAt: new Date(),
+    };
+
+    await memberRef.doc(params.userUID).set(newMember);
   };
 
   create = async (params: SessionCreate): Promise<SessionResponse> => {
-    type NewSession = Omit<ISession, "ID">;
-    const sessionParams: NewSession = {
+    const sessionParams: Partial<ISession> = {
       ...params,
       status: SessionStatus.Active,
-      members: {
-        [params.hostID]: {
-          uid: params.hostID,
-          role: Role.host,
-          lastActiveAt: new Date(),
-        },
-      },
     };
 
-    const sessionRef = await this.db
+    const sessionRef = this.db
       .collection(SESSION_COLLECTION)
-      .add({
-        ...sessionParams,
-        createdAt: ServerTimestamp,
-        updatedAt: ServerTimestamp,
-      });
+      .doc();
+    const membersRef = this.db
+      .collection(`${ SESSION_COLLECTION }/${ sessionRef.id }/members`);
+
+    await sessionRef.set({
+      ...sessionParams,
+      createdAt: ServerTimestamp,
+      updatedAt: ServerTimestamp,
+    });
+
+    await membersRef.doc(params.hostID).set(
+      {
+        uid: params.hostID,
+        role: Role.host,
+        lastActiveAt: new Date(),
+      }
+    );
 
     return {
       session: {
         ID: sessionRef.id,
-        ...sessionParams,
+        status: SessionStatus.Active,
+        hostID: params.hostID,
         createdAt: new Date(),
         updatedAt: new Date(),
       }

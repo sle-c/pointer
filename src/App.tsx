@@ -43,7 +43,7 @@ function App() {
           <Join />
         </Route>
 
-        <Route path="/">
+        <Route exact path="/">
           <Home />
         </Route>
 

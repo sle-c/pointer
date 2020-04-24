@@ -5,7 +5,8 @@ import JoinForm from "./join_form";
 import styles from "./styles.module.scss";
 
 type PropTypes = {
-  sessionID: string
+  sessionID: string,
+  hostname: string,
 };
 
 const JoinUI = (props: PropTypes) => {
@@ -15,7 +16,7 @@ const JoinUI = (props: PropTypes) => {
 
       <div className={styles.content}>
         <p className={styles.joinText}>
-          You are invited to join <span className={styles.userName}>Amy's</span> room
+          You are invited to join <span className={styles.userName}>{props.hostname}'s</span> room
         </p>
 
         <img

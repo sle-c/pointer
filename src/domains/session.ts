@@ -1,5 +1,3 @@
-import Membership from "./membership";
-
 enum SessionStatus {
   Active = "active",
   VoteStarted = "vote_started",
@@ -12,9 +10,6 @@ interface Session {
   ID: string, // uuid of the session
   status: SessionStatus,
   hostID: string,
-  members: {
-    [k: string]: Membership,
-  },
   createdAt?: Date,
   updatedAt?: Date,
 }
