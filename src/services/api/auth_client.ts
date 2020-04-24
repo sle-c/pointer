@@ -1,7 +1,5 @@
-import firebase from "./firebase";
+import firebase, { AUTH_LOCAL, AUTH_SESSION, AUTH_PROVIDERS } from "./firebase";
 import User from "../../domains/user";
-
-import { AUTH_LOCAL, AUTH_SESSION, AUTH_PROVIDERS } from "./firebase_constants";
 
 interface AuthError {
   readonly message: string,
