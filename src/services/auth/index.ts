@@ -26,12 +26,12 @@ class Auth {
 
       req.then((auth: AuthDomain) => {
         this.userService.update({
-          name: name,
           UID: auth.UID,
-        }).then((user: User) => {
+          name: name,
+        }).then((user) => {
           resolve({
             UID: auth.UID,
-            name: user.name,
+            name: user.user.name,
             verified: auth.verified,
             email: auth.email,
             isAnonymous: true,

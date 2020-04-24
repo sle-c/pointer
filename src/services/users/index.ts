@@ -1,53 +1,62 @@
-import { DBClient } from "../api";
+import firebase from "../api/firebase";
 import IUser from "../../domains/user";
 
-const COLLECTION = "users";
+const USER_COLLECTION = "users";
 
 interface UpdateUser {
   UID: string,
   name: string,
 }
 
+interface UserResponse {
+  user: IUser,
+}
+
 class User {
-  private db: DBClient;
+  private db: firebase.firestore.Firestore;
 
   constructor() {
-    this.db = new DBClient();
+    this.db = firebase.firestore();
   }
 
-  get = (uid: string) => {
-    return new Promise<IUser>((resolve, reject) => {
-      this.db.get(`${ COLLECTION }/${ uid }`)
-        .then((resp) => {
-          const user: IUser = {
-            UID: resp.data.uid as string,
-            name: resp.data.name as string,
-          };
+  get = async (uid: string): Promise<UserResponse> => {
 
-          resolve(user);
-        }).catch(reject);
-    });
+    const snapshot = await this.db
+      .doc(`${ USER_COLLECTION }/${ uid }`)
+      .get();
+
+    if (snapshot.exists) {
+
+      const data = snapshot.data();
+
+      return {
+        user: {
+          UID: snapshot.id,
+          name: data?.name as string,
+        }
+      };
+    }
+
+    const err = new Error("User not found");
+    err.name = "UserNotFound";
+    throw err;
   }
 
-  update = (params: UpdateUser) => {
-    return new Promise<IUser>((resolve, reject) => {
-      this.db.set(
-          COLLECTION,
-          {
-            uid: params.UID,
-            name: params.name,
-          },
-          params.UID,
-        )
-        .then(() => {
-          const newUser = {
-            UID: params.UID,
-            name: params.name,
-          };
+  update = async (params: UpdateUser): Promise<UserResponse> => {
+    const userRef = this.db.collection(USER_COLLECTION)
+      .doc(params.UID);
 
-          resolve(newUser);
-        }).catch(reject);
+    await userRef.set({
+      uid: params.UID,
+      name: params.name,
     });
+
+    return {
+      user: {
+        UID: params.UID,
+        name: params.name,
+      },
+    };
   }
 }
 

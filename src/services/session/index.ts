@@ -1,5 +1,4 @@
-import firebase from "../api/firebase";
-import { ServerTimestamp } from "../api/firebase_constants";
+import firebase, { ServerTimestamp } from "../api/firebase";
 import ISession, { SessionStatus } from "../../domains/session";
 import Membership, { Role } from "../../domains/membership";
 
