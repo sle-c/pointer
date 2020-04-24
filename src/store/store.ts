@@ -3,10 +3,12 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { userReducer } from "./user/reducer";
 import { sessionReducer } from './session/reducer';
+import { membersReducer } from './members/reducer';
 
 const rootReducer = combineReducers({
   user: userReducer,
   session: sessionReducer,
+  members: membersReducer,
 });
 
 const logger = (store: any) => (next: any) => (action: any) => {

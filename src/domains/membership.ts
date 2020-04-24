@@ -6,6 +6,7 @@ enum Role {
 interface Membership {
   uid: string,
   role: Role,
+  name?: string,
   lastActiveAt: Date,
 };
 
