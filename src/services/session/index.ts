@@ -1,6 +1,5 @@
 import firebase, { ServerTimestamp } from "../api/firebase";
 import ISession, { SessionStatus } from "../../domains/session";
-import { Role } from "../../domains/membership";
 
 const SESSION_COLLECTION = "sessions";
 
@@ -47,10 +46,9 @@ class Session {
     const memberRef = this.db.collection(
       `${ SESSION_COLLECTION }/${ params.sessionID }/members`
     );
-    debugger;
+
     const newMember = {
       uid: params.userUID,
-      role: Role.member,
       lastActiveAt: new Date(),
     };
 
@@ -79,7 +77,6 @@ class Session {
     await membersRef.doc(params.hostID).set(
       {
         uid: params.hostID,
-        role: Role.host,
         lastActiveAt: new Date(),
       }
     );
