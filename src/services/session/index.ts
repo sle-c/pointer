@@ -47,7 +47,7 @@ class Session {
     const memberRef = this.db.collection(
       `${ SESSION_COLLECTION }/${ params.sessionID }/members`
     );
-
+    debugger;
     const newMember = {
       uid: params.userUID,
       role: Role.member,
@@ -55,6 +55,7 @@ class Session {
     };
 
     await memberRef.doc(params.userUID).set(newMember);
+    return;
   };
 
   create = async (params: SessionCreate): Promise<SessionResponse> => {

@@ -51,10 +51,10 @@ async function joinSession(name: string, sessionID: string) {
   const user: User = await auth.signUpAnonymously(name);
   const action = updateUser(user);
   store.dispatch(action);
-  return _joinSesssion(user.UID, sessionID);
+  return _joinSesssion(sessionID, user.UID);
 };
 
-async function _joinSesssion(userUID: string, sessionID: string) {
+async function _joinSesssion(sessionID: string, userUID: string,) {
   await sessionService.join({
     sessionID,
     userUID,
