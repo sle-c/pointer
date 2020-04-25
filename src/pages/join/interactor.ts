@@ -37,6 +37,16 @@ async function checkSession(sessionID: string): Promise<boolean> {
   return false;
 }
 
+async function joinSessionNoAuth(sessionID: string): Promise<boolean> {
+  const user = auth.currentUser();
+  if (user) {
+    await _joinSesssion(sessionID, user.UID);
+    return true;
+  }
+
+  return false;
+}
+
 async function joinSession(name: string, sessionID: string) {
   const user: User = await auth.signUpAnonymously(name);
   const action = updateUser(user);
@@ -54,4 +64,5 @@ async function _joinSesssion(userUID: string, sessionID: string) {
 export default {
   joinSession,
   checkSession,
+  joinSessionNoAuth,
 };
