@@ -3,7 +3,7 @@ import Auth from "../../services/auth";
 import UserService from "../../services/users";
 
 import User from "../../domains/user";
-import Membership, { Role } from "../../domains/membership";
+import Membership from "../../domains/membership";
 
 import store from "../../store/store";
 import { updateUser } from "../../store/user/actions";
@@ -21,7 +21,6 @@ async function checkSession(sessionID: string): Promise<boolean> {
     const user = await userService.get(sessionResp.session.hostID);
     const member: Membership = {
       uid: user.user.UID,
-      role: Role.host,
       name: user.user.name || "Unknown",
       lastActiveAt: new Date(),
     };
