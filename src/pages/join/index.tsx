@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Redirect } from "react-router-dom";
+import { useParams, Redirect, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from 'react-redux'
 
 import { RootState } from "../../store/store";
@@ -9,6 +9,7 @@ import JoinUI from "./ui";
 
 
 const mapState = (state: RootState) => ({
+  user: state.user,
   session: state.session,
   members: state.members,
 });
@@ -24,26 +25,51 @@ const getHostName = (props: Props): string => {
   return props.members[hostID].name || "Unknown";
 }
 
+const tryToJoinSession = async (sessionID: string, history: any) : Promise<boolean> => {
+  const success = await Interactor.joinSessionNoAuth(sessionID);
+
+  if (success) {
+    history.push(`/r/${ sessionID }`, {
+      from: "/join",
+    });
+
+    return true;
+  }
+
+  return false;
+};
+
 const Join = (props: Props) => {
 
   let { sessionID } = useParams();
+  const history = useHistory();
   const [loading, setLoading] = useState(true);
   const [valid, setValid] = useState(false);
 
   useEffect(() => {
-    if (sessionID) {
-      Interactor
-        .checkSession(sessionID)
-        .then((valid: boolean) => {
+
+    Interactor
+      .checkSession(sessionID as string)
+      .then((valid: boolean) => {
+
+        if (props.user.UID !== "" && valid) {
+          tryToJoinSession(
+            sessionID as string,
+            history,
+          ).then((success) => {
+            if (!success)  {
+              console.error("failed to join session");
+            }
+          });
+
+        } else {
           setValid(valid);
           setLoading(false);
-        }).catch(() => {
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
-    }
-  }, [sessionID]);
+        }
+      }).catch(() => {
+        setLoading(false);
+      });
+  }, [sessionID, props.user, history]);
 
   if (loading) {
     return null;

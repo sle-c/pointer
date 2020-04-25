@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+  useState, useEffect,
+} from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,21 +17,31 @@ import Auth from "./services/auth";
 import store from "./store/store";
 import { updateUser } from "./store/user/actions";
 
-const auth = new Auth();
-
-auth.onAuthStateChanged((user): void => {
-  const currentState = store.getState();
-  if (currentState.user.UID !== "") {
-    return;
-  }
-
-  if (user) {
-    const action = updateUser(user);
-    store.dispatch(action);
-  }
-});
-
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const auth = new Auth();
+    auth.onAuthStateChanged((user): void => {
+
+      const currentState = store.getState();
+      if (currentState.user.UID !== "") {
+        return;
+      }
+
+      if (user) {
+        const action = updateUser(user);
+        store.dispatch(action);
+      }
+
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return null;
+  }
+
   return (
     <Router>
       <ScrollToTop/>
