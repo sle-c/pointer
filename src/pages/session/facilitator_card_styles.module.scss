@@ -1,0 +1,30 @@
+@import "../../variable.scss";
+@import "./card.module.scss";
+
+.facilitatorCardContainer {
+  position: relative;
+  margin-top: 1rem;
+}
+
+.facilitatorCard {
+  position: relative;
+  max-height: 100px;
+  z-index: 10;
+}
+
+.facilitatorRow {
+  padding: 1rem 2rem;
+  font-family: Roboto Mono;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 0.875em;
+
+  color: #E8C444;
+}
+
+#leoCat {
+  position: absolute;
+  z-index: 9;
+  left: -32px;
+  top: -6px;
+}

@@ -1,0 +1,38 @@
+@import "../../variable.scss";
+@import "./card.module.scss";
+
+.participantsCardContainer {
+  margin-top: 3rem;
+  position: relative;
+}
+
+#customerServiceCat {
+  position: absolute;
+  z-index: 9;
+  top: -26px;
+  left: 36px;
+}
+
+#catOnChart {
+  position: absolute;
+  z-index: 9;
+  top: -18px;
+  right: 70px;
+}
+
+.participantsCard {
+  height: 350px;
+  max-height: 350px;
+  position: relative;
+  z-index: 10;
+
+  .emptyList {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      margin-top: 1.5rem;
+    }
+  }
+}
