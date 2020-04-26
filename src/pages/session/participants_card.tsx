@@ -2,6 +2,13 @@ import React from "react";
 import classNames from "classnames";
 
 import styles from "./participants_card_styles.module.scss";
+import Participant from "./participant";
+
+type Participant = { name: string, points?: number};
+
+interface Props {
+  participants: Participant[],
+};
 
 const EmptyList = () => (
 
@@ -13,7 +20,16 @@ const EmptyList = () => (
   </div>
 );
 
-const ParticipantsCard = () => {
+const renderParticipants = (participants: Participant[]) => {
+  return participants.map((p) => (
+    <Participant
+      name={p.name}
+      points={p.points}
+    />
+  ));
+};
+
+const ParticipantsCard = (props: Props) => {
   return (
     <div className={styles.participantsCardContainer}>
       <div id={styles.customerServiceCat}>
@@ -40,8 +56,12 @@ const ParticipantsCard = () => {
             </div>
           </div>
         </div>
-        <div className={styles.cardBody}>
-          <EmptyList />
+        <div className={classNames(styles.cardBody, styles.participantCardBody)}>
+          {
+            props.participants.length > 0
+              ? renderParticipants(props.participants)
+              : <EmptyList />
+          }
         </div>
       </div>
     </div>

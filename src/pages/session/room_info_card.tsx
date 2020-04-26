@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
 
 import styles from "./room_info_card_styles.module.scss";
@@ -13,14 +13,30 @@ const RoomInfoCard = (props: Props) => {
     console.log("terminate");
   };
 
+  const [roomInfoClosed, setRoomInfoClosed] = useState(true);
+
+  const onCollapseClicked = () => {
+    console.log("collapsing");
+    setRoomInfoClosed(!roomInfoClosed);
+  };
+
+  const dropDownIconClass = classNames(styles.dropDownIcon, { [styles.closed]: roomInfoClosed });
+  const roomInfoBodyClass = classNames(styles.cardBody, styles.roomInfoBody, { [styles.closed]: roomInfoClosed });
+
   return (
     <div className={styles.roomInfoCardContainer}>
       <div className={classNames(styles.roomInfoCard, styles.card)}>
         <div className={classNames(styles.cardHeader, styles.roomInfoCardHeader)}>
-          <span role="img" aria-label="house-emoji">🏠</span><span> {props.hostName}'s Room</span>
+          <p className={styles.headerTitle}>
+            <span role="img" aria-label="house-emoji">🏠</span>
+            <span> {props.hostName}'s Room</span>
+          </p>
+          <span className={dropDownIconClass} onClick={onCollapseClicked}>
+            <i className="material-icons">arrow_drop_down</i>
+          </span>
         </div>
 
-        <div className={classNames(styles.cardBody, styles.roomInfoBody)}>
+        <div className={roomInfoBodyClass}>
 
           <div className={styles.formGroup}>
             <label>Room URL</label>
