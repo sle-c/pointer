@@ -1,0 +1,60 @@
+@import "../../variable.scss";
+@import "./card.module.scss";
+
+.roomInfoCardContainer {
+  margin-top: 3rem;
+}
+
+.roomInfoCard {
+  position: relative;
+}
+
+.roomInfoCardHeader {
+  color: #E9F3FF;
+  font-size: 0.875rem;
+  font-family: $roboto-mono;
+  letter-spacing: normal;
+  font-weight: bold;
+  padding: 0.875rem 2rem;
+}
+
+.roomInfoBody {
+  padding: 1rem 2rem;
+}
+
+.formGroup {
+  font-family: $roboto-mono;
+  font-size: 0.75em;
+  color: #6D829B;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.75rem;
+
+  label {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.linkGroup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.roomURL {
+  max-width: 80%;
+  word-wrap: break-word;
+
+  font-family: $roboto-mono;
+  font-size: 0.875em;
+  color: #E9F3FF;
+}
+
+.copy {
+  font-family: $roboto-mono;
+  font-weight: bold;
+  font-size: 0.75em;
+  line-height: 0.75em;
+
+  color: #A0B9D6;
+}
