@@ -7,6 +7,31 @@ import ParticipantsCard from "./participants_card";
 import FacilitatorCard from "./facilitator_card";
 import RoomInfoCard from "./room_info_card";
 
+const participants = [
+  {
+    name: "David",
+    points: 1,
+  },
+  {
+    name: "Test",
+  },
+  {
+    name: "John",
+  },
+  {
+    name: "Mayer",
+  },
+  {
+    name: "Tennesse",
+  },
+  {
+    name: "Whisky",
+  },
+  {
+    name: "Bunny",
+  },
+];
+
 const SessionUI = () => {
   return (
     <div className={styles.sessionPage}>
@@ -14,7 +39,7 @@ const SessionUI = () => {
       <div className="container">
         <div className="row">
           <div className="col-6">
-            <ParticipantsCard />
+            <ParticipantsCard participants={participants}/>
             <FacilitatorCard
               hostName="Amy"
             />

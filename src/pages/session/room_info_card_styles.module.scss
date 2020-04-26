@@ -16,10 +16,39 @@
   letter-spacing: normal;
   font-weight: bold;
   padding: 0.875rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropDownIcon {
+  display: flex;
+  cursor: pointer;
+  transition: transform 0.3s;
+
+  &.closed {
+    transform: rotate(90deg);
+  }
+}
+
+.headerTitle {
+  margin: 0;
 }
 
 .roomInfoBody {
   padding: 1rem 2rem;
+  height: auto;
+  max-height: 170px;
+  opacity: 1;
+  transition: max-height 0.3s, opacity 0.2s;
+
+  &.closed {
+    max-height: 0;
+    overflow: scroll;
+    opacity: 0;
+    padding: 0rem 2rem;
+    transition: max-height 0.3s, opacity 0.2s;
+  }
 }
 
 .formGroup {
@@ -51,10 +80,11 @@
 }
 
 .copy {
+  text-align: right;
   font-family: $roboto-mono;
   font-weight: bold;
   font-size: 0.75em;
   line-height: 0.75em;
-
+  cursor: pointer;
   color: #A0B9D6;
 }
