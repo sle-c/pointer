@@ -112,6 +112,12 @@ div {
   background-color: #D25A40;
 }
 
+.btn.btn-sm {
+  width: fit-content;
+  padding: 8px 8px 11px 8px;
+  font-size: 0.875em;
+}
+
 .btn.btn-xs {
   width: fit-content;
   padding: 4px 8px;

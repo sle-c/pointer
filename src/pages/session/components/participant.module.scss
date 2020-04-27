@@ -1,4 +1,4 @@
-@import "../../variable.scss";
+@import "../../../variable.scss";
 
 .participant {
   padding: 1rem;
@@ -6,4 +6,10 @@
   font-size: 0.875rem;
   color: #A0B9D6;
   border-bottom: 1px solid #1C2229;
+}
+
+.voted {
+  font-family: $roboto-mono;
+  font-size: 0.875rem;
+  color: #178B30;
 }

@@ -1,0 +1,19 @@
+@import "../../../variable.scss";
+
+.facilitatorControlContainer {
+  font-family: $roboto-mono;
+  color: #E9F3FF;
+  margin-top: 4rem;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 1.25em;
+  margin-bottom: 1.75rem;
+}
+
+.subtitle {
+  font-size: 0.75em;
+  color: #E9F3FF;
+  margin-bottom: 1.75rem;
+}

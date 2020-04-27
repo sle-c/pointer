@@ -1,4 +1,4 @@
-@import "../../variable.scss";
+@import "../../../variable.scss";
 @import "./card.module.scss";
 
 .roomInfoCardContainer {
@@ -15,7 +15,7 @@
   font-family: $roboto-mono;
   letter-spacing: normal;
   font-weight: bold;
-  padding: 0.875rem 2rem;
+  padding: 0.75rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -25,6 +25,7 @@
   display: flex;
   cursor: pointer;
   transition: transform 0.3s;
+  color: #6D829B;
 
   &.closed {
     transform: rotate(90deg);

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import classNames from "classnames";
 
-import styles from "./room_info_card_styles.module.scss";
+import styles from "./room_info_card.module.scss";
 
 interface Props {
   hostName: string,
