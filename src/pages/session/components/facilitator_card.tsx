@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-import styles from "./facilitator_card_styles.module.scss";
+import styles from "./facilitator_card.module.scss";
 
 interface Props {
   hostName: string,

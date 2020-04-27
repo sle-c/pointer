@@ -1,10 +1,14 @@
 import React from "react";
 import classNames from "classnames";
 
-import styles from "./participants_card_styles.module.scss";
+import styles from "./participants_card.module.scss";
 import Participant from "./participant";
 
-type Participant = { name: string, points?: number};
+type Participant = {
+  name: string,
+  points?: number,
+  hideVote?: boolean,
+};
 
 interface Props {
   participants: Participant[],
@@ -23,6 +27,7 @@ const EmptyList = () => (
 const renderParticipants = (participants: Participant[]) => {
   return participants.map((p) => (
     <Participant
+      hideVote={p.hideVote}
       name={p.name}
       points={p.points}
     />
