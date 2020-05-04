@@ -1,7 +1,6 @@
 import firebase, { ServerTimestamp } from "../api/firebase";
+import { COLLECTION } from "../api/constants";
 import ISession, { SessionStatus } from "../../domains/session";
-
-const SESSION_COLLECTION = "sessions";
 
 interface SessionCreate {
   hostID: string
@@ -24,7 +23,7 @@ class Session {
   }
 
   get = async (sessionID: string): Promise<SessionResponse | null> => {
-    const sessionRef = this.db.doc(`${ SESSION_COLLECTION }/${ sessionID }`);
+    const sessionRef = this.db.doc(`${ COLLECTION.SESSIONS }/${ sessionID }`);
     const sessionSnapshot = await sessionRef.get();
     const sessionData = sessionSnapshot.data();
 
@@ -44,7 +43,7 @@ class Session {
 
   join = async (params: SessionJoin): Promise<void> => {
     const memberRef = this.db.collection(
-      `${ SESSION_COLLECTION }/${ params.sessionID }/members`
+      `${ COLLECTION.SESSIONS }/${ params.sessionID }/${ COLLECTION.MEMBERS }`
     );
 
     const newMember = {
@@ -63,10 +62,10 @@ class Session {
     };
 
     const sessionRef = this.db
-      .collection(SESSION_COLLECTION)
+      .collection(COLLECTION.SESSIONS)
       .doc();
     const membersRef = this.db
-      .collection(`${ SESSION_COLLECTION }/${ sessionRef.id }/members`);
+      .collection(`${ COLLECTION.SESSIONS }/${ sessionRef.id }/${ COLLECTION.MEMBERS }`);
 
     await sessionRef.set({
       ...sessionParams,

@@ -1,6 +1,25 @@
-import firebase, { ServerTimestamp } from "../api/firebase";
+import firebase, { ServerTimestamp, DBServerTimestamp } from "../api/firebase";
+import { COLLECTION } from "../api/constants";
 
-const STATUS_COLLECTION = "statuses";
+const isOnlineForDatabase = {
+  state: "online",
+  lastActiveAt: DBServerTimestamp,
+};
+
+const isOfflineForDatabase = {
+  state: "offline",
+  lastActiveAt: DBServerTimestamp,
+}
+
+const isOnlineForFirestore = {
+  state: "online",
+  lastActiveAt: ServerTimestamp,
+};
+
+const isOfflineForFirestore = {
+  state: "offline",
+  lastActiveAt: ServerTimestamp,
+};
 
 class PresenceService {
   private realtimeDB: firebase.database.Database;
@@ -12,32 +31,55 @@ class PresenceService {
   }
 
   ping(sessionID: string, userUID: string) {
+    const userStatusDatabaseRef = firebase.database()
+      .ref(`/${ COLLECTION.STATUS }/${sessionID}/${ userUID }`);
 
-
-
-
-  }
-
-  setOnline = (sessionID: string, userUID: string) => {
-    var userStatusRef = this.db
-      .collection(`sessions/${ userUID }/${ STATUS_COLLECTION }`)
+    const userStatusFirestoreRef = this.db
+      .collection(`${ COLLECTION.SESSIONS }/${ sessionID }/${ COLLECTION.MEMBERS }`)
       .doc(userUID);
 
-    var isOnlineForFirestore = {
-      state: "online",
-      last_changed: ServerTimestamp,
-    };
-  }
+    const connectionRef = this.realtimeDB.ref(".info/connected");
 
-  setOffline = (sessionID: string, userUID: string) => {
-    var userStatusRef = this.db
-      .collection(`sessions/${ userUID }/${ STATUS_COLLECTION }`)
-      .doc(userUID);
+    connectionRef.on("value", (snapshot) => {
+      // we'll also set Firestore's state
+      // to 'offline'. This ensures that our Firestore cache is aware
+      // of the switch to 'offline.'
+      if (snapshot.val() === false) {
+        userStatusFirestoreRef.set(
+          isOfflineForFirestore,
+          { merge: true },
+        );
+        return;
+      };
 
-    var isOfflineForFirestore = {
-      state: "offline",
-      last_changed: ServerTimestamp,
+      userStatusDatabaseRef
+        .onDisconnect()
+        .set(isOfflineForDatabase)
+        .then(() => {
+          // The promise returned from .onDisconnect().set() will
+          // resolve as soon as the server acknowledges the onDisconnect()
+          // request, NOT once we've actually disconnected:
+          // https://firebase.google.com/docs/reference/js/firebase.database.OnDisconnect
+
+          // We can now safely set ourselves as 'online' knowing that the
+          // server will mark us as offline once we lose connection.
+          userStatusDatabaseRef.set(isOnlineForDatabase);
+          // We'll also add Firestore set here for when we come online.
+          userStatusFirestoreRef.set(
+            isOnlineForFirestore,
+            { merge: true },
+          );
+        });
+    });
+
+    const unsub = () => {
+      connectionRef.off();
+      userStatusDatabaseRef.onDisconnect().cancel();
+      userStatusDatabaseRef.set(isOfflineForDatabase);
+      userStatusFirestoreRef.set(isOfflineForFirestore);
     };
+
+    return unsub;
   }
 }
 

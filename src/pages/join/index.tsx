@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { withRouter, RouteComponentProps } from "react-router";
-import { connect, ConnectedProps } from 'react-redux'
+import { connect, ConnectedProps } from "react-redux";
 
 import { RootState } from "../../store/store";
 

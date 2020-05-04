@@ -1,7 +1,6 @@
 import firebase from "../api/firebase";
+import { COLLECTION } from "../api/constants";
 import IUser from "../../domains/user";
-
-const USER_COLLECTION = "users";
 
 interface UpdateUser {
   UID: string,
@@ -22,7 +21,7 @@ class User {
   get = async (uid: string): Promise<UserResponse> => {
 
     const snapshot = await this.db
-      .doc(`${ USER_COLLECTION }/${ uid }`)
+      .doc(`${ COLLECTION.USERS }/${ uid }`)
       .get();
 
     if (snapshot.exists) {
@@ -43,7 +42,7 @@ class User {
   }
 
   update = async (params: UpdateUser): Promise<UserResponse> => {
-    const userRef = this.db.collection(USER_COLLECTION)
+    const userRef = this.db.collection(COLLECTION.USERS)
       .doc(params.UID);
 
     await userRef.set({
