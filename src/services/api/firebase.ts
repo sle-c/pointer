@@ -3,6 +3,7 @@ import * as firebase from "firebase/app";
 
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/database";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FRB_API_KEY,
@@ -19,6 +20,7 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 
 const ServerTimestamp = firebase.firestore.FieldValue.serverTimestamp();
+const DBServerTimestamp = firebase.database.ServerValue.TIMESTAMP;
 const AUTH_SESSION = firebase.auth.Auth.Persistence.SESSION;
 const AUTH_LOCAL = firebase.auth.Auth.Persistence.LOCAL;
 
@@ -31,6 +33,7 @@ export {
   AUTH_SESSION,
   AUTH_LOCAL,
   AUTH_PROVIDERS,
+  DBServerTimestamp,
 };
 
 export default app;
