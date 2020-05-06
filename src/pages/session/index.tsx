@@ -3,8 +3,11 @@ import { withRouter, RouteComponentProps } from "react-router";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../store/store";
 
+import Presence from "../../services/presence";
 import Interactor from "./interactor";
 import SessionUI from "./ui";
+
+const presenceService = new Presence();
 
 const mapState = (state: RootState) => ({
   user: state.user,
@@ -28,11 +31,14 @@ type State = {
 
 class SessionPage extends Component<Props, State> {
 
+  presenceUnsub: (() => void) | null;
+
   constructor(props: Props) {
     super(props);
     this.state = {
       loading: true,
     };
+    this.presenceUnsub = null;
   }
 
   componentDidMount() {
@@ -41,6 +47,12 @@ class SessionPage extends Component<Props, State> {
         loading: false,
       });
     });
+  }
+
+  componentWillUnmount() {
+    if (this.presenceUnsub) {
+      this.presenceUnsub();
+    }
   }
 
   async initSession(): Promise<boolean> {
@@ -59,6 +71,8 @@ class SessionPage extends Component<Props, State> {
         console.error("Failed to join session");
         this.props.history.push("/fur-oh-fur");
         return false;
+      } else {
+        this.presenceUnsub = presenceService.ping(sessionID, this.props.user.UID);
       }
     } else {
       this.props.history.push(

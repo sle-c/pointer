@@ -1,11 +1,12 @@
 {
   "rules": {
     "status": {
-      "$uid": {
-        ".read": "auth.uid !== null",
-        ".write": "$uid === auth.uid"
+      "$sessionID" :{
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "$uid === auth.uid"
+        }
       }
-
     }
   }
 }
