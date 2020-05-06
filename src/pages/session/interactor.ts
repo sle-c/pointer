@@ -1,6 +1,5 @@
 import Session, { SessionResponse } from "../../services/session";
 import Auth from "../../services/auth";
-import UserService from "../../services/users";
 
 import Membership from "../../domains/membership";
 

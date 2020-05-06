@@ -23,11 +23,14 @@ const Logo = (props: PropTypes) => (
       )
     }
   >
+
     <h1 className={classNames(styles.logo, {
       [styles.md]: props.size === "md",
       [styles.sm]: props.size === "sm"
     })}>
-      Pointers.
+      <a href="/">
+        Pointers.
+      </a>
     </h1>
   </header>
 );
