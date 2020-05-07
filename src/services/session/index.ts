@@ -15,6 +15,12 @@ interface SessionJoin {
   userUID: string,
 }
 
+// TODO: maybe SessionSetStatus is a better name?
+interface SessionChangeStatus {
+  sessionID: string,
+  status: string,
+}
+
 class Session {
   private db: firebase.firestore.Firestore;
 
@@ -54,6 +60,20 @@ class Session {
     await memberRef.doc(params.userUID).set(newMember);
     return;
   };
+
+  changeStatus = async (params: SessionChangeStatus): Promise<void> => {
+    this.db.collection(COLLECTION.SESSIONS)
+      .doc(params.sessionID)
+      .set({
+        status: params.status,
+      }, { merge: true })
+      .then(() => {
+        console.log("Document successfully written!");
+      })
+      .catch((error: any) => {
+        console.error("Error writing document: ", error);
+      });
+  }
 
   create = async (params: SessionCreate): Promise<SessionResponse> => {
     const sessionParams: Partial<ISession> = {

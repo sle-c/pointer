@@ -4,6 +4,7 @@ import styles from "./facilitator_control.module.scss";
 
 interface Props {
   hostName: string,
+  onSessionStatusChange: () => void,
 };
 
 const renderSubtitle = (props: Props) => {
@@ -20,7 +21,10 @@ const FacilitatorControl = (props: Props) => {
         <p className={styles.subtitle}>
           {renderSubtitle(props)}
         </p>
-        <button className="btn btn-success btn-sm">
+        <button 
+          className="btn btn-success btn-sm"
+          onClick={props.onSessionStatusChange}
+        >
           Start Voting
         </button>
       </div>
