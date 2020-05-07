@@ -6,6 +6,7 @@ import { RootState } from "../../store/store";
 import Presence from "../../services/presence";
 import Interactor from "./interactor";
 import SessionUI from "./ui";
+import { SessionStatus } from "../../domains/session";
 
 const presenceService = new Presence();
 
@@ -55,6 +56,15 @@ class SessionPage extends Component<Props, State> {
     }
   }
 
+  handleSessionStatusChange = () => {
+    const sessionID = this.props.match.params.sessionID;
+    // TODO: maybe we need something to figure out next state? temporarily hardcode
+    Interactor.changeSessionStatus(
+      sessionID,
+      SessionStatus.Active,
+    );
+  }
+
   async initSession(): Promise<boolean> {
     const sessionID = this.props.match.params.sessionID;
 
@@ -94,7 +104,9 @@ class SessionPage extends Component<Props, State> {
     }
 
     return (
-      <SessionUI />
+      <SessionUI 
+        onSessionStatusChange={this.handleSessionStatusChange}
+      />
     );
   }
 }
