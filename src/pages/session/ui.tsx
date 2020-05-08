@@ -8,6 +8,10 @@ import FacilitatorCard from "./components/facilitator_card";
 import RoomInfoCard from "./components/room_info_card";
 import FacilitatorControl from "./components/facilitator_control";
 
+interface Props {
+  onSessionStatusChange: () => void,
+}
+
 const participants = [
   {
     name: "David",
@@ -36,7 +40,7 @@ const participants = [
   },
 ];
 
-const SessionUI = () => {
+const SessionUI = (props: Props) => {
   return (
     <div className={styles.sessionPage}>
       <Logo position="center"/>
@@ -50,7 +54,10 @@ const SessionUI = () => {
           </div>
           <div className="col-5 offset-1">
             <RoomInfoCard hostName="Amy" />
-            <FacilitatorControl hostName="Amy" />
+            <FacilitatorControl 
+              hostName="Amy"
+              onSessionStatusChange={props.onSessionStatusChange}
+            />
           </div>
         </div>
       </div>
