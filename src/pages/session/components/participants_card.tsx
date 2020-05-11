@@ -25,8 +25,9 @@ const EmptyList = () => (
 );
 
 const renderParticipants = (participants: Participant[]) => {
-  return participants.map((p) => (
+  return participants.map((p, i) => (
     <Participant
+      key={`participant-${i}`}
       hideVote={p.hideVote}
       name={p.name}
       points={p.points}
