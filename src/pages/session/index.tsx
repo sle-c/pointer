@@ -7,6 +7,8 @@ import Presence from "../../services/presence";
 import Interactor from "./interactor";
 import SessionUI from "./ui";
 import { SessionStatus } from "../../domains/session";
+import { Participant } from "./types";
+import isEmpty from "lodash/isEmpty";
 
 const presenceService = new Presence();
 
@@ -32,14 +34,14 @@ type State = {
 
 class SessionPage extends Component<Props, State> {
 
-  presenceUnsub: (() => void) | null;
+  unsub: (() => void) | null;
 
   constructor(props: Props) {
     super(props);
     this.state = {
       loading: true,
     };
-    this.presenceUnsub = null;
+    this.unsub = null;
   }
 
   componentDidMount() {
@@ -51,8 +53,8 @@ class SessionPage extends Component<Props, State> {
   }
 
   componentWillUnmount() {
-    if (this.presenceUnsub) {
-      this.presenceUnsub();
+    if (this.unsub) {
+      this.unsub();
     }
   }
 
@@ -77,25 +79,72 @@ class SessionPage extends Component<Props, State> {
 
     if (this.props.user.UID !== "") {
       const joinSuccess = await Interactor.joinSessionNoAuth(sessionID);
+
       if (!joinSuccess) {
         console.error("Failed to join session");
         this.props.history.push("/fur-oh-fur");
         return false;
       } else {
-        this.presenceUnsub = presenceService.ping(sessionID, this.props.user.UID);
-      }
-    } else {
-      this.props.history.push(
-        `/join/${ sessionID }`,
-        {
-          referrer: "session",
-        },
-      );
+        const presenceUnsub = presenceService.ping(sessionID, this.props.user.UID);
+        const membersUnsub = this.subscribeToMembers();
 
-      return false;
+        this.unsub = () => {
+          presenceUnsub();
+          membersUnsub();
+        };
+
+        return true;
+      }
     }
 
-    return true;
+    this.props.history.push(
+      `/join/${ sessionID }`,
+      {
+        referrer: "session",
+      },
+    );
+
+    return false;
+  }
+
+  subscribeToMembers(): () => void {
+    const sessionID = this.props.match.params.sessionID;
+    return Interactor.subscribeToMembers(sessionID);
+  }
+
+  renderParticipants(): Participant[] {
+    const sessionID = this.props.match.params.sessionID;
+    const currentMembers = this.props.members[sessionID] || {};
+
+    if (isEmpty(currentMembers)) {
+      return [];
+    }
+
+    return Object.values(currentMembers).reduce((memo: Participant[], mem) => {
+      const hostID = this.props.session.hostID;
+      if (mem.status === "online" && mem.uid !== hostID) {
+        const participant = {
+          name: mem.name as string,
+          points: 0,
+        }
+
+        memo.push(participant);
+      }
+
+      return memo;
+    }, []);
+  }
+
+  renderHostname(): string {
+    const sessionID = this.props.match.params.sessionID;
+    const hostID = this.props.session.hostID;
+    const currentMembers = this.props.members[sessionID] || {};
+
+    if (isEmpty(currentMembers)) {
+      return "Unknown";
+    }
+
+    return currentMembers[hostID].name || "Unknown";
   }
 
   render() {
@@ -104,7 +153,9 @@ class SessionPage extends Component<Props, State> {
     }
 
     return (
-      <SessionUI 
+      <SessionUI
+        hostName={this.renderHostname()}
+        participants={this.renderParticipants()}
         onSessionStatusChange={this.handleSessionStatusChange}
       />
     );

@@ -25,7 +25,7 @@ async function checkSession(sessionID: string): Promise<boolean> {
       lastActiveAt: new Date(),
     };
 
-    const memberAction = updateMember(member);
+    const memberAction = updateMember(sessionResp.session.ID, member);
     store.dispatch(memberAction);
 
     const action = updateSession(sessionResp.session);

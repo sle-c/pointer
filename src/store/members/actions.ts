@@ -1,10 +1,23 @@
 import Membership from "../../domains/membership";
 
-import { UPDATE_MEMBER, MemberActionType } from "./types";
+import { UPDATE_MEMBER, UPDATE_MEMBERS, MemberActionType } from "./types";
 
-export function updateMember(member: Membership): MemberActionType {
+export function updateMembers(sessionID: string, members: Membership[]): MemberActionType {
+  return {
+    type: UPDATE_MEMBERS,
+    payload: {
+      sessionID: sessionID,
+      members: members,
+    },
+  }
+};
+
+export function updateMember(sessionID: string, member: Membership): MemberActionType {
   return {
     type: UPDATE_MEMBER,
-    payload: member,
+    payload: {
+      sessionID: sessionID,
+      member: member,
+    },
   }
-}
+};

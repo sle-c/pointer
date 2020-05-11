@@ -1,15 +1,16 @@
-import Session, { SessionResponse } from "../../services/session";
+import isEmpty from "lodash/isEmpty";
+import Session, { SessionResponse, MembersResponse } from "../../services/session";
 import Auth from "../../services/auth";
-
-import Membership from "../../domains/membership";
+import UserService from "../../services/users";
 
 import store from "../../store/store";
 import { updateSession } from "../../store/session/actions";
-import { updateMember } from "../../store/members/actions";
+import { updateMembers } from "../../store/members/actions";
 import { SessionStatus } from "../../domains/session";
 
 const sessionService = new Session();
 const auth = new Auth();
+const userService = new UserService();
 
 async function checkSession(sessionID: string): Promise<boolean> {
   const sessionResp: SessionResponse | null = await sessionService.get(sessionID);
@@ -47,21 +48,45 @@ async function joinSessionNoAuth(sessionID: string): Promise<boolean> {
       userUID: user.UID,
     });
 
-    const member: Membership = {
-      uid: user.UID,
-      name: user.name || "Unknown",
-      lastActiveAt: new Date(),
-    };
-    const memberAction = updateMember(member);
-    store.dispatch(memberAction);
     return true;
   }
 
   return false;
 }
 
+function subscribeToMembers(sessionID: string): () => void {
+  return sessionService.subscribeToMembers(
+    sessionID,
+    async (resp: MembersResponse) => {
+      const { members, memberUIDs } = resp;
+      const currentMembers = store.getState().members[sessionID] || {};
+      let filterMembers: string[] = [];
+
+      if (isEmpty(currentMembers)) {
+        filterMembers = memberUIDs;
+      } else {
+        filterMembers = memberUIDs.filter((uid: string): boolean => {
+          return isEmpty(currentMembers[uid]) || isEmpty(currentMembers[uid].name);
+        });
+      }
+
+      const usersResponse = await userService.batchGet(filterMembers);
+      const users = usersResponse.users;
+
+      members.forEach((mem) => {
+        if (users[mem.uid]?.name) {
+          mem.name = users[mem.uid].name as string;
+        }
+      });
+
+      store.dispatch(updateMembers(sessionID, members));
+    }
+  );
+}
+
 export default {
   changeSessionStatus,
   checkSession,
   joinSessionNoAuth,
+  subscribeToMembers
 };

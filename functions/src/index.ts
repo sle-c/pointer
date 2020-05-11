@@ -33,7 +33,10 @@ export const onUserStatusChanged = functions.database.ref(refPath).onUpdate(
     eventStatus.lastActiveAt = new Date(eventStatus.lastActiveAt);
 
     // ... and write it to Firestore.
-    return userStatusFirestoreRef.set(eventStatus);
+    return userStatusFirestoreRef.set(
+      eventStatus,
+      { merge: true },
+    );
   },
 );
 

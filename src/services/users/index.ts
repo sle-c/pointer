@@ -1,4 +1,5 @@
 import firebase from "../api/firebase";
+import chunk from "lodash/chunk";
 import { COLLECTION } from "../api/constants";
 import IUser from "../../domains/user";
 
@@ -9,6 +10,12 @@ interface UpdateUser {
 
 interface UserResponse {
   user: IUser,
+}
+
+interface BatchUserResponse {
+  users: {
+    [uid: string]: IUser
+  },
 }
 
 class User {
@@ -40,6 +47,41 @@ class User {
     err.name = "UserNotFound";
     throw err;
   }
+
+  batchGet = async (uids: string[]): Promise<BatchUserResponse> => {
+    if (uids.length < 1) {
+      return Promise.resolve({
+        users: {},
+      });
+    }
+    const IN_LIMIT = 10;
+    const uidChunks = chunk(uids, IN_LIMIT);
+    const users: { [uid: string]: IUser } = {};
+
+    const usersRef = this.db.collection(COLLECTION.USERS);
+
+    const promises = uidChunks.map((uidChunk: string[]) => {
+      return usersRef.where("uid", "in", uidChunk).get();
+    });
+
+    const responses = await Promise.all(promises);
+
+    responses.forEach((queryResp) => {
+      queryResp.docs.forEach((userDoc) => {
+        const userData = userDoc.data();
+        const user: IUser = {
+          UID: userDoc.id,
+          name: userData?.name as string,
+        };
+
+        users[userDoc.id] = user;
+      });
+    });
+
+    return {
+      users
+    };
+  };
 
   update = async (params: UpdateUser): Promise<UserResponse> => {
     const userRef = this.db.collection(COLLECTION.USERS)

@@ -5,6 +5,7 @@ import { connect, ConnectedProps } from "react-redux";
 
 import { RootState } from "../../store/store";
 
+import getInObject from "lodash/get";
 import Interactor from "./interactor";
 import JoinUI from "./ui";
 
@@ -68,8 +69,9 @@ class Join extends Component<Props, States> {
   }
 
   getHostName = (): string => {
-    const hostID = this.props.session.hostID;
-    return this.props.members[hostID].name || "Unknown";
+    const { hostID, ID} = this.props.session;
+    const currentMembers = this.props.members;
+    return getInObject(currentMembers, `${ ID }.${ hostID }.name`, "Unknown") as string;
   }
 
   tryToJoinSession = async (sessionID: string, history: any) : Promise<boolean> => {

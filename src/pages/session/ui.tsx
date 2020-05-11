@@ -7,38 +7,13 @@ import ParticipantsCard from "./components/participants_card";
 import FacilitatorCard from "./components/facilitator_card";
 import RoomInfoCard from "./components/room_info_card";
 import FacilitatorControl from "./components/facilitator_control";
+import { Participant } from "./types";
 
 interface Props {
+  participants: Participant[],
+  hostName?: string,
   onSessionStatusChange: () => void,
 }
-
-const participants = [
-  {
-    name: "David",
-    points: 1,
-    hideVote: true,
-  },
-  {
-    name: "Test",
-    hideVote: true,
-    points: 0,
-  },
-  {
-    name: "John",
-  },
-  {
-    name: "Mayer",
-  },
-  {
-    name: "Tennesse",
-  },
-  {
-    name: "Whisky",
-  },
-  {
-    name: "Bunny",
-  },
-];
 
 const SessionUI = (props: Props) => {
   return (
@@ -47,15 +22,17 @@ const SessionUI = (props: Props) => {
       <div className="container">
         <div className="row">
           <div className="col-6">
-            <ParticipantsCard participants={participants}/>
+            <ParticipantsCard
+              participants={props.participants}
+            />
             <FacilitatorCard
-              hostName="Amy"
+              hostName={props.hostName || "Unknown"}
             />
           </div>
           <div className="col-5 offset-1">
-            <RoomInfoCard hostName="Amy" />
-            <FacilitatorControl 
-              hostName="Amy"
+            <RoomInfoCard hostName={props.hostName || "Unknown"} />
+            <FacilitatorControl
+              hostName={props.hostName || "Unknown"}
               onSessionStatusChange={props.onSessionStatusChange}
             />
           </div>

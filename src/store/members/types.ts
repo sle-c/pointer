@@ -1,14 +1,28 @@
 import Membership from "../../domains/membership";
 
-export const UPDATE_MEMBER = "UPDATE_MEMBER";
+export const UPDATE_MEMBERS = "UPDATE_MEMBERS",
+  UPDATE_MEMBER = "UPDATE_MEMBER";
+
+interface UpdateMembersAction {
+  type: typeof UPDATE_MEMBERS,
+  payload: {
+    sessionID: string,
+    members: Membership[],
+  },
+}
 
 interface UpdateMemberAction {
   type: typeof UPDATE_MEMBER,
-  payload: Membership,
+  payload: {
+    sessionID: string,
+    member: Membership,
+  },
 }
 
 export type MembershipState = {
-  [k: string]: Membership,
+  [sessionID: string]: {
+    [memberUID: string]: Membership,
+  },
 };
 
-export type MemberActionType = UpdateMemberAction;
+export type MemberActionType = UpdateMembersAction | UpdateMemberAction;
