@@ -3,15 +3,13 @@ import classNames from "classnames";
 
 import styles from "./participants_card.module.scss";
 import Participant from "./participant";
+import { SessionStatus } from "../../../domains/session";
+import { Participant as IParticipant } from "../types";
 
-type Participant = {
-  name: string,
-  points?: number,
-  hideVote?: boolean,
-};
 
 interface Props {
-  participants: Participant[],
+  participants: IParticipant[],
+  sessionStatus: SessionStatus,
 };
 
 const EmptyList = () => (
@@ -24,11 +22,12 @@ const EmptyList = () => (
   </div>
 );
 
-const renderParticipants = (participants: Participant[]) => {
+const renderParticipants = (participants: IParticipant[], sessionStatus: SessionStatus) => {
+
   return participants.map((p, i) => (
     <Participant
       key={`participant-${i}`}
-      hideVote={p.hideVote}
+      sessionStatus={sessionStatus}
       name={p.name}
       points={p.points}
     />
@@ -65,7 +64,7 @@ const ParticipantsCard = (props: Props) => {
         <div className={classNames(styles.cardBody, styles.participantCardBody)}>
           {
             props.participants.length > 0
-              ? renderParticipants(props.participants)
+              ? renderParticipants(props.participants, props.sessionStatus)
               : <EmptyList />
           }
         </div>

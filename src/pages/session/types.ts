@@ -1,6 +1,6 @@
 interface Participant {
   name: string,
-  points: number
+  points: number | null
 }
 
 export type { Participant };

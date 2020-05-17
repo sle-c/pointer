@@ -12,19 +12,24 @@ import isEmpty from "lodash/isEmpty";
 
 const presenceService = new Presence();
 
-const mapState = (state: RootState) => ({
-  user: state.user,
-  session: state.session,
-  members: state.members,
-});
+type PathParams = {
+  sessionID: string,
+};
+
+const mapState = (state: RootState, ownProps: RouteComponentProps<PathParams>) => {
+  const sessionID = ownProps.match.params.sessionID;
+  const members = state.members[sessionID];
+
+  return {
+    user: state.user,
+    session: state.session,
+    members: members,
+  };
+};
 
 const connector = connect(mapState);
 
 type PropsFromRedux = ConnectedProps<typeof connector>
-
-type PathParams = {
-  sessionID: string,
-};
 
 type Props = PropsFromRedux & RouteComponentProps<PathParams>
 
@@ -58,12 +63,12 @@ class SessionPage extends Component<Props, State> {
     }
   }
 
-  handleSessionStatusChange = () => {
-    const sessionID = this.props.match.params.sessionID;
-    // TODO: maybe we need something to figure out next state? temporarily hardcode
+  handleSessionStatusChange = (status: SessionStatus) => {
+    const sessionID = this.props.session.ID;
+
     Interactor.changeSessionStatus(
       sessionID,
-      SessionStatus.Active,
+      status,
     );
   }
 
@@ -113,8 +118,7 @@ class SessionPage extends Component<Props, State> {
   }
 
   renderParticipants(): Participant[] {
-    const sessionID = this.props.match.params.sessionID;
-    const currentMembers = this.props.members[sessionID] || {};
+    const currentMembers = this.props.members || {};
 
     if (isEmpty(currentMembers)) {
       return [];
@@ -125,8 +129,8 @@ class SessionPage extends Component<Props, State> {
       if (mem.status === "online" && mem.uid !== hostID) {
         const participant = {
           name: mem.name as string,
-          points: 0,
-        }
+          points: null,
+        };
 
         memo.push(participant);
       }
@@ -136,9 +140,8 @@ class SessionPage extends Component<Props, State> {
   }
 
   renderHostname(): string {
-    const sessionID = this.props.match.params.sessionID;
     const hostID = this.props.session.hostID;
-    const currentMembers = this.props.members[sessionID] || {};
+    const currentMembers = this.props.members || {};
 
     if (isEmpty(currentMembers)) {
       return "Unknown";
@@ -154,6 +157,8 @@ class SessionPage extends Component<Props, State> {
 
     return (
       <SessionUI
+        members={this.props.members}
+        session={this.props.session}
         hostName={this.renderHostname()}
         participants={this.renderParticipants()}
         onSessionStatusChange={this.handleSessionStatusChange}
@@ -162,4 +167,4 @@ class SessionPage extends Component<Props, State> {
   }
 }
 
-export default connector(withRouter(SessionPage));
+export default withRouter(connector(SessionPage));

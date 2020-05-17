@@ -1,6 +1,7 @@
 enum SessionStatus {
   Active = "active",
   VoteStarted = "vote_started",
+  VoteEnding = "vote_ending",
   VoteEnded = "vote_ended",
   Idle = "idle",
   Closed = "closed",

@@ -24,18 +24,11 @@ async function checkSession(sessionID: string): Promise<boolean> {
   return false;
 }
 
-// should it receive what to change it too?
 async function changeSessionStatus(sessionID: string, status: SessionStatus): Promise<boolean> {
-  // should we just receive success here?
   await sessionService.changeStatus({
     sessionID,
     status,
   });
-  // TODO: should we then dispatch action to update state of session
-  // in redux or not, because maybe we will rely on the value of being subscribed to session?
-
-  // check for errors?
-
   return false;
 }
 

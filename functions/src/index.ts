@@ -14,7 +14,10 @@ export const onUserStatusChanged = functions.database.ref(refPath).onUpdate(
     const eventStatus = change.after.val();
     // Then use other event data to create a reference to the
     // corresponding Firestore document.
-    const userStatusFirestoreRef = firestore.doc(`sessions/${context.params.sessionID}/members/${context.params.uid}`);
+    const userStatusFirestoreRef = firestore
+      .doc(
+        `sessions/${context.params.sessionID}/members/${context.params.uid}`
+      );
 
     // It is likely that the Realtime Database change that triggered
     // this event has already been overwritten by a fast change in

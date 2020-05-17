@@ -3,17 +3,31 @@
 .facilitatorControlContainer {
   font-family: $roboto-mono;
   color: #E9F3FF;
-  margin-top: 4rem;
+  margin-top: 1.5rem;
 }
 
 .title {
   font-weight: bold;
   font-size: 1.25em;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.voteTitle {
+  font-size: 1.25em;
+  color: #E8C444;
+  margin-bottom: 1.5rem;
+}
+
+.success {
+  color: #24BC45;
 }
 
 .subtitle {
   font-size: 0.75em;
-  color: #E9F3FF;
+  color: #A0B9D6;
   margin-bottom: 1.75rem;
+}
+
+.emphasis {
+  color: #E9F3FF;
 }

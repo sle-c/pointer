@@ -138,9 +138,6 @@ class Session {
       .set({
         status: params.status,
       }, { merge: true })
-      .then(() => {
-        console.log("Document successfully written!");
-      })
       .catch((error: any) => {
         console.error("Error writing document: ", error);
       });

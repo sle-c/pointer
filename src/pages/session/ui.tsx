@@ -8,14 +8,26 @@ import FacilitatorCard from "./components/facilitator_card";
 import RoomInfoCard from "./components/room_info_card";
 import FacilitatorControl from "./components/facilitator_control";
 import { Participant } from "./types";
+import Session, { SessionStatus } from "../../domains/session";
+
+import get from "lodash/get";
+import Membership from "../../domains/membership";
 
 interface Props {
+  members: { [uid: string]: Membership },
   participants: Participant[],
   hostName?: string,
-  onSessionStatusChange: () => void,
+  session?: Session,
+  onSessionStatusChange: (status: SessionStatus) => void,
 }
 
 const SessionUI = (props: Props) => {
+  const sessionStatus = get(props.session, "status", SessionStatus.Active);
+  const currentMembers = props.members || {};
+  const membersCount = Object.values(currentMembers).filter(
+    (mem) => mem.uid !== props.session?.hostID
+  ).length;
+
   return (
     <div className={styles.sessionPage}>
       <Logo position="center"/>
@@ -23,6 +35,7 @@ const SessionUI = (props: Props) => {
         <div className="row">
           <div className="col-6">
             <ParticipantsCard
+              sessionStatus={sessionStatus}
               participants={props.participants}
             />
             <FacilitatorCard
@@ -32,6 +45,8 @@ const SessionUI = (props: Props) => {
           <div className="col-5 offset-1">
             <RoomInfoCard hostName={props.hostName || "Unknown"} />
             <FacilitatorControl
+              membersCount={membersCount}
+              sessionStatus={sessionStatus}
               hostName={props.hostName || "Unknown"}
               onSessionStatusChange={props.onSessionStatusChange}
             />

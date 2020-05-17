@@ -1,30 +1,34 @@
 import React from "react";
 import capitalize from "lodash/capitalize";
 import styles from "./participant.module.scss";
+import { SessionStatus } from "../../../domains/session";
 
 interface Props {
   name: string,
-  hideVote?: boolean,
-  points?: number,
+  sessionStatus: SessionStatus
+  points?: number | null,
 }
 
-const renderVote = (props: Props) => {
-  const hasPoints = props.points !== undefined && props.points > -1;
-  const hasNoPoints = props.points === undefined || props.points < 0;
+const renderVote = (props: Props): string | number => {
+  const pointsExists = props.points !== null && props.points !== undefined;
+  const shouldShowVote = props.sessionStatus === SessionStatus.VoteEnded;
 
-  if (props.hideVote && hasPoints) {
-    return "Voted";
-  } else if (props.hideVote && hasNoPoints) {
-    return "-";
-  } else if (!props.hideVote && hasPoints) {
-    return props.points;
-  } else {
+  if (!pointsExists) {
     return "-";
   }
+
+  if (pointsExists && !shouldShowVote) {
+    return "Voted";
+  } else if (pointsExists && shouldShowVote) {
+    return props.points as number;
+  }
+
+  return "-";
 };
 
 const renderVoteClass = (props: Props) => {
-  if (props.points !== undefined && props.points > -1) {
+  const pointsExists = props.points !== null && props.points !== undefined;
+  if (pointsExists && (props.points as number) > -1) {
     return styles.voted;
   } else {
     return "";
