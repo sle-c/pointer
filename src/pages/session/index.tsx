@@ -92,10 +92,12 @@ class SessionPage extends Component<Props, State> {
       } else {
         const presenceUnsub = presenceService.ping(sessionID, this.props.user.UID);
         const membersUnsub = this.subscribeToMembers();
+        const sessionUnsub = this.subscribeToSession();
 
         this.unsub = () => {
           presenceUnsub();
           membersUnsub();
+          sessionUnsub();
         };
 
         return true;
@@ -113,8 +115,11 @@ class SessionPage extends Component<Props, State> {
   }
 
   subscribeToMembers(): () => void {
-    const sessionID = this.props.match.params.sessionID;
-    return Interactor.subscribeToMembers(sessionID);
+    return Interactor.subscribeToMembers(this.props.session.ID);
+  }
+
+  subscribeToSession(): () => void {
+    return Interactor.subscribeToSession(this.props.session.ID);
   }
 
   renderParticipants(): Participant[] {

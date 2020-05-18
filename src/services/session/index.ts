@@ -21,7 +21,6 @@ interface MembersResponse {
   memberUIDs: string[],
 }
 
-// TODO: maybe SessionSetStatus is a better name?
 interface SessionChangeStatus {
   sessionID: string,
   status: string,
@@ -36,30 +35,40 @@ class Session {
 
   subscribe = (sessionID: string, callback: (sess: SessionResponse | null) => void): () => void =>  {
     const sessionRef = this.db.doc(`${ COLLECTION.SESSIONS }/${ sessionID }`);
+    const snapshotOptions = {
+      // Listen for document metadata changes
+      includeMetadataChanges: true,
+    };
+    return sessionRef.onSnapshot(snapshotOptions, (snapshot) => {
 
-    return sessionRef.onSnapshot((snapshot) => {
       if (!snapshot.exists) {
         callback(null);
       }
 
-      if (!snapshot.metadata.hasPendingWrites) {
-        const sessionData = snapshot.data();
+      if (snapshot.metadata.fromCache) {
+        return;
+      }
 
-        if (sessionData) {
-          const resp: SessionResponse = {
-            session: {
-              ID: snapshot.id,
-              status: sessionData.status as SessionStatus,
-              hostID: sessionData.hostID as string,
-              createdAt: sessionData.createdAt.toDate() as Date,
-              updatedAt: sessionData.updatedAt.toDate() as Date,
-            },
-          };
+      if (snapshot.metadata.hasPendingWrites) {
+        return;
+      }
 
-          callback(resp);
-        } else {
-          callback(null);
-        }
+      const sessionData = snapshot.data();
+
+      if (sessionData) {
+        const resp: SessionResponse = {
+          session: {
+            ID: snapshot.id,
+            status: sessionData.status as SessionStatus,
+            hostID: sessionData.hostID as string,
+            createdAt: sessionData.createdAt.toDate() as Date,
+            updatedAt: sessionData.updatedAt.toDate() as Date,
+          },
+        };
+
+        callback(resp);
+      } else {
+        callback(null);
       }
     });
   }
@@ -69,7 +78,12 @@ class Session {
       `${ COLLECTION.SESSIONS }/${ sessionID }/${ COLLECTION.MEMBERS }`
     );
 
-    return membersRef.onSnapshot((querySnapshot: firebase.firestore.QuerySnapshot) => {
+    const snapshotOptions = {
+      // Listen for document metadata changes
+      includeMetadataChanges: true,
+    };
+
+    return membersRef.onSnapshot(snapshotOptions, (querySnapshot: firebase.firestore.QuerySnapshot) => {
       const members: Membership[] = [];
       const memberUIDs: string[] = [];
       if (querySnapshot.metadata.fromCache) {
@@ -135,9 +149,9 @@ class Session {
   changeStatus = async (params: SessionChangeStatus): Promise<void> => {
     this.db.collection(COLLECTION.SESSIONS)
       .doc(params.sessionID)
-      .set({
+      .update({
         status: params.status,
-      }, { merge: true })
+      })
       .catch((error: any) => {
         console.error("Error writing document: ", error);
       });

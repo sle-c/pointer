@@ -6,7 +6,7 @@ import UserService from "../../services/users";
 import store from "../../store/store";
 import { updateSession } from "../../store/session/actions";
 import { updateMembers } from "../../store/members/actions";
-import { SessionStatus } from "../../domains/session";
+import ISession, { SessionStatus } from "../../domains/session";
 
 const sessionService = new Session();
 const auth = new Auth();
@@ -77,9 +77,19 @@ function subscribeToMembers(sessionID: string): () => void {
   );
 }
 
+function subscribeToSession(sessionID: string): () => void {
+  return sessionService.subscribe(sessionID, (sess: SessionResponse | null): void => {
+    if (isEmpty(sess?.session)) {
+      return;
+    }
+    store.dispatch(updateSession(sess?.session as ISession));
+  });
+}
+
 export default {
   changeSessionStatus,
   checkSession,
   joinSessionNoAuth,
-  subscribeToMembers
+  subscribeToMembers,
+  subscribeToSession,
 };

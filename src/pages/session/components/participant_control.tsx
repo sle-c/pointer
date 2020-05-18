@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import classNames from "classnames";
 import isEmpty from "lodash/isEmpty";
 
 import styles from "./participant_control.module.scss";
@@ -45,7 +46,7 @@ const renderTitle = (props: Props) => {
 
     case SessionStatus.VoteEnded: {
       return (
-        <h3 className={styles.voteTitle}>
+        <h3 className={classNames(styles.voteTitle, styles.success)}>
           The results are in!
         </h3>
       );
