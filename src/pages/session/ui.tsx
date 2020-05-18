@@ -12,12 +12,15 @@ import Session, { SessionStatus } from "../../domains/session";
 
 import get from "lodash/get";
 import Membership from "../../domains/membership";
+import ParticipantControl from "./components/participant_control";
+import User from "../../domains/user";
 
 interface Props {
   members: { [uid: string]: Membership },
   participants: Participant[],
   hostName?: string,
   session?: Session,
+  user: User,
   onSessionStatusChange: (status: SessionStatus) => void,
 }
 
@@ -27,6 +30,7 @@ const SessionUI = (props: Props) => {
   const membersCount = Object.values(currentMembers).filter(
     (mem) => mem.uid !== props.session?.hostID
   ).length;
+  const currentMember = currentMembers[props.user.UID];
 
   return (
     <div className={styles.sessionPage}>
@@ -49,6 +53,10 @@ const SessionUI = (props: Props) => {
               sessionStatus={sessionStatus}
               hostName={props.hostName || "Unknown"}
               onSessionStatusChange={props.onSessionStatusChange}
+            />
+            <ParticipantControl
+              sessionStatus={sessionStatus}
+              participant={currentMember}
             />
           </div>
         </div>

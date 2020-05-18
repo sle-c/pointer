@@ -157,6 +157,7 @@ class SessionPage extends Component<Props, State> {
 
     return (
       <SessionUI
+        user={this.props.user}
         members={this.props.members}
         session={this.props.session}
         hostName={this.renderHostname()}

@@ -1,0 +1,81 @@
+@import "../../variable.scss";
+
+$selected-color: #24BC45;
+
+.radioButtonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+
+  input[type='radio'] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 11;
+  }
+}
+
+.radioButtonContainer label {
+  margin-top: 8px;
+  cursor: pointer;
+  color: #6D829B;
+}
+
+.innerCircle {
+  border-radius: 50%;
+  position: absolute;
+  background-color: #1C2229;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 18px;
+  height: 18px;
+}
+
+.outerCircle {
+  position: absolute;
+  background-color: #181B1E;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9;
+}
+
+.radioButton {
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+
+.radioButtonContainer.selected {
+  .innerCircle {
+    background-color: $selected-color;
+    width: 12px;
+    height: 12px;
+  }
+
+  .outerCircle {
+    background-color: transparent;
+    border-width: 2px;
+    border-color: $selected-color;
+    border-style: solid;
+  }
+
+  label {
+    color: $selected-color;
+  }
+}
+
+.radioButtonContainer.disabled,
+.radioButtonContainer.readonly {
+  cursor: not-allowed;
+
+  label {
+    cursor: not-allowed;
+  }
+}

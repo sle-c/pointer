@@ -1,0 +1,37 @@
+@import "../../../variable.scss";
+
+.participantControl {
+  margin-top: 4rem;
+}
+
+.title {
+  font-family: $roboto-mono;
+  font-size: 1.25em;
+  color: #E9F3FF;
+  margin-bottom: 1.5rem;
+}
+
+.subtitle {
+  font-family: $roboto-mono;
+  font-size: 0.875em;
+  color: #A0B9D6;
+}
+
+.voteTitle {
+  font-family: $roboto-mono;
+  font-size: 1.25em;
+  color: #E8C444;
+}
+
+.emphasis {
+  color: #E9F3FF;
+}
+
+.success {
+  color: #24BC45;
+}
+
+.selections {
+  display: flex;
+  justify-content: space-between;
+}
