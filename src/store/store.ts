@@ -4,11 +4,13 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { userReducer } from "./user/reducer";
 import { sessionReducer } from './session/reducer';
 import { membersReducer } from './members/reducer';
+import { votesReducer } from "./votes/reducer";
 
 const rootReducer = combineReducers({
   user: userReducer,
   session: sessionReducer,
   members: membersReducer,
+  votes: votesReducer,
 });
 
 const logger = (store: any) => (next: any) => (action: any) => {

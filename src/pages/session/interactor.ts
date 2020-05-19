@@ -2,15 +2,18 @@ import isEmpty from "lodash/isEmpty";
 import Session, { SessionResponse, MembersResponse } from "../../services/session";
 import Auth from "../../services/auth";
 import UserService from "../../services/users";
+import VoteService, { VotesResponse } from "../../services/votes";
 
 import store from "../../store/store";
 import { updateSession } from "../../store/session/actions";
 import { updateMembers } from "../../store/members/actions";
+import { updateVotes } from "../../store/votes/actions";
 import ISession, { SessionStatus } from "../../domains/session";
 
 const sessionService = new Session();
 const auth = new Auth();
 const userService = new UserService();
+const voteService = new VoteService();
 
 async function checkSession(sessionID: string): Promise<boolean> {
   const sessionResp: SessionResponse | null = await sessionService.get(sessionID);
@@ -86,10 +89,31 @@ function subscribeToSession(sessionID: string): () => void {
   });
 }
 
+function subscribeToVotes(sessionID: string): () => void {
+  return voteService.subscribe(sessionID, (voteResp: VotesResponse) => {
+    store.dispatch(updateVotes(voteResp.votes || []));
+  });
+}
+
+function clearVotes(sessionID: string, memberUIDs: string[]) {
+  return voteService.clear(sessionID, memberUIDs);
+}
+
+function createVote(sessionID: string, userUID: string, point: number) {
+  return voteService.create({
+    sessionID,
+    userUID,
+    point,
+  });
+}
+
 export default {
   changeSessionStatus,
   checkSession,
   joinSessionNoAuth,
   subscribeToMembers,
   subscribeToSession,
+  subscribeToVotes,
+  clearVotes,
+  createVote,
 };

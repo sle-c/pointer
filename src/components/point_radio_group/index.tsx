@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import classNames from "classnames";
 
 import styles from "./styles.module.scss";
@@ -16,22 +16,21 @@ interface Props {
   disabled?: boolean,
   readonly?: boolean,
   onChange?: (value: any) => void,
+  selectedValue?: any,
 }
 
 const PointRadioGroup = (props: Props) => {
-  const [selectedValue, setValue] = useState(null);
 
   const clicked = (val: any) => {
-    if (selectedValue === val) {
-      return;
-    }
-    setValue(val);
     if (props.onChange) {
       props.onChange(val);
     }
   }
 
   const selections = props.collection.map((selection, i) => {
+
+    const selected = props.selectedValue === selection.value;
+
     return (
       <PointRadio
         key={`point-radio-${i}`}
@@ -40,7 +39,7 @@ const PointRadioGroup = (props: Props) => {
         label={selection.label}
         onClick={clicked}
         disabled={props.disabled}
-        selectedValue={selectedValue}
+        selected={selected}
         readonly={props.readonly}
       />
     );

@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { withRouter, RouteComponentProps } from "react-router";
 import { connect, ConnectedProps } from "react-redux";
+import isEmpty from "lodash/isEmpty";
+import pull from "lodash/pull";
+
 import { RootState } from "../../store/store";
 
 import Presence from "../../services/presence";
@@ -8,7 +11,6 @@ import Interactor from "./interactor";
 import SessionUI from "./ui";
 import { SessionStatus } from "../../domains/session";
 import { Participant } from "./types";
-import isEmpty from "lodash/isEmpty";
 
 const presenceService = new Presence();
 
@@ -24,6 +26,7 @@ const mapState = (state: RootState, ownProps: RouteComponentProps<PathParams>) =
     user: state.user,
     session: state.session,
     members: members,
+    votes: state.votes,
   };
 };
 
@@ -63,15 +66,6 @@ class SessionPage extends Component<Props, State> {
     }
   }
 
-  handleSessionStatusChange = (status: SessionStatus) => {
-    const sessionID = this.props.session.ID;
-
-    Interactor.changeSessionStatus(
-      sessionID,
-      status,
-    );
-  }
-
   async initSession(): Promise<boolean> {
     const sessionID = this.props.match.params.sessionID;
 
@@ -93,11 +87,13 @@ class SessionPage extends Component<Props, State> {
         const presenceUnsub = presenceService.ping(sessionID, this.props.user.UID);
         const membersUnsub = this.subscribeToMembers();
         const sessionUnsub = this.subscribeToSession();
+        const votesUnsub = this.subscribeToVotes();
 
         this.unsub = () => {
           presenceUnsub();
           membersUnsub();
           sessionUnsub();
+          votesUnsub();
         };
 
         return true;
@@ -122,8 +118,38 @@ class SessionPage extends Component<Props, State> {
     return Interactor.subscribeToSession(this.props.session.ID);
   }
 
+  subscribeToVotes(): () => void {
+    return Interactor.subscribeToVotes(this.props.session.ID);
+  }
+
+  handleSessionStatusChange = (status: SessionStatus) => {
+    const sessionID = this.props.session.ID;
+
+    if (status === SessionStatus.Active) {
+      const hostID = this.props.session.hostID;
+      const memberUIDs = pull(Object.keys(this.props.members), hostID);
+      Interactor.clearVotes(sessionID,  memberUIDs || []);
+    }
+
+    Interactor.changeSessionStatus(
+      sessionID,
+      status,
+    );
+  }
+
+  handlePointSelected = (point: number) => {
+    const sessionID = this.props.session.ID;
+    const userUID = this.props.user.UID;
+    Interactor.createVote(
+      sessionID,
+      userUID,
+      point,
+    );
+  }
+
   renderParticipants(): Participant[] {
     const currentMembers = this.props.members || {};
+    const currentVotes = this.props.votes || {};
 
     if (isEmpty(currentMembers)) {
       return [];
@@ -132,9 +158,11 @@ class SessionPage extends Component<Props, State> {
     return Object.values(currentMembers).reduce((memo: Participant[], mem) => {
       const hostID = this.props.session.hostID;
       if (mem.status === "online" && mem.uid !== hostID) {
+        const participantVote = currentVotes[mem.uid];
+
         const participant = {
           name: mem.name as string,
-          points: null,
+          points: participantVote?.point,
         };
 
         memo.push(participant);
@@ -167,7 +195,9 @@ class SessionPage extends Component<Props, State> {
         session={this.props.session}
         hostName={this.renderHostname()}
         participants={this.renderParticipants()}
+        votes={this.props.votes}
         onSessionStatusChange={this.handleSessionStatusChange}
+        onPointSelected={this.handlePointSelected}
       />
     );
   }

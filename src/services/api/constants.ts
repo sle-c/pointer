@@ -3,4 +3,5 @@ export const COLLECTION = {
   SESSIONS: "sessions",
   USERS: "users",
   MEMBERS: "members",
+  VOTES: "votes",
 };

@@ -10,7 +10,7 @@ interface Props {
   onClick?: (value: any) => void,
   disabled?: boolean,
   readonly?: boolean,
-  selectedValue?: any,
+  selected?: boolean,
 }
 
 const PointRadio = (props: Props) => {
@@ -25,11 +25,11 @@ const PointRadio = (props: Props) => {
     }
   };
 
-  const selected = props.selectedValue === props.value;
+
   const containerStyles = classNames(
     styles.radioButtonContainer,
     {
-      [styles.selected]: selected && !props.disabled,
+      [styles.selected]: props.selected && !props.disabled,
       [styles.disabled]: props.disabled,
       [styles.readonly]: props.readonly,
     },

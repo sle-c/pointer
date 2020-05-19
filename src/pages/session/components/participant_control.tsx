@@ -3,13 +3,16 @@ import classNames from "classnames";
 import isEmpty from "lodash/isEmpty";
 
 import styles from "./participant_control.module.scss";
-import Membership from "../../../domains/membership";
 import PointRadioGroup from "../../../components/point_radio_group";
+import Membership from "../../../domains/membership";
+import Vote from "../../../domains/vote";
 import { SessionStatus } from "../../../domains/session";
 
 interface Props {
   sessionStatus: SessionStatus,
   participant?: Membership,
+  vote?: Vote,
+  onPointSelected?: (point: number) => void,
 };
 
 const STORY_POINTS = [0, 1, 2, 3, 5, 8, 13, 21, 34];
@@ -105,7 +108,11 @@ const renderActions = (props: Props) => {
     value: point,
   }));
 
-  const onChange = (val: any) => console.log(val);
+  const onChange = (val: any) => {
+    if (props.onPointSelected) {
+      props.onPointSelected(val as number);
+    }
+  };
 
   return (
     <PointRadioGroup
@@ -113,6 +120,7 @@ const renderActions = (props: Props) => {
       disabled={disabled}
       readonly={readonly}
       onChange={onChange}
+      selectedValue={props.vote?.point}
     />
   );
 };
@@ -123,7 +131,7 @@ const ParticipantControl = (props: Props) => {
     <div className={styles.participantControl}>
       {renderTitle(props)}
       {renderSubtitle(props)}
-      <div className={styles.action}>
+      <div className={styles.actions}>
         {renderActions(props)}
       </div>
     </div>
