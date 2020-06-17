@@ -1,3 +1,7 @@
+# Pointer
+
+Pointer is my side project to help my team at Jiffy point Jira tasks using poker point system while working remotely. It's being hosted [here](https://pointer-3906a.web.app/). This project is in very early stage.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
