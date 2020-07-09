@@ -1,42 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import "./variable.scss";
 @import "../node_modules/bootstrap/scss/bootstrap-grid.scss";
-
-@font-face {
-  font-family: 'Circular Std';
-  src: local('Circular Std Black Italic'), local('CircularStd-BlackItalic'),
-      url(https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Ffonts%2FCircularStd-BlackItalic.woff2?alt=media&token=deadb6ef-72ff-4f92-aaad-f3d31b95d35a) format('woff2'),
-      url(https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Ffonts%2FCircularStd-BlackItalic.woff?alt=media) format('woff');
-  font-weight: 900;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Circular Std';
-  src: local('Circular Std Black'), local('CircularStd-Black'),
-      url(https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Ffonts%2FCircularStd-Black.woff2?alt=media) format('woff2'),
-      url(https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Ffonts%2FCircularStd-Black.woff?alt=media) format('woff');
-  font-weight: 900;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Circular Std Book';
-  src: local('Circular Std Book'), local('CircularStd-Book'),
-      url(https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Ffonts%2FCircularStd-Book.woff2?alt=media&token=3f5205fe-51b9-4698-9141-4956bae7a5b5) format('woff2'),
-      url(https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Ffonts%2FCircularStd-Book.woff?alt=media&token=a50f580a-099b-4dd1-8458-c844d8308d19) format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Circular Std Book';
-  src: local('Circular Std Book Italic'), local('CircularStd-BookItalic'),
-      url(https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Ffonts%2FCircularStd-BookItalic.woff2?alt=media&token=24dc5554-f773-437c-aaa0-44c9b37cba50) format('woff2'),
-      url(https://firebasestorage.googleapis.com/v0/b/pointer-3906a.appspot.com/o/public%2Ffonts%2FCircularStd-BookItalic.woff?alt=media&token=9c1c44ab-0326-469f-969d-d159a5b7700a) format('woff');
-  font-weight: normal;
-  font-style: italic;
-}
 
 html {
   height: 100%
