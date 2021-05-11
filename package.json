@@ -7,7 +7,7 @@
     "classnames": "^2.2.6",
     "core-js": "^3.6.5",
     "firebase": "^7.14.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "normalize.css": "^8.0.1",
     "pluralize": "^8.0.0",
     "react": "^16.13.1",
